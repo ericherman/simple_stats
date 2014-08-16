@@ -29,3 +29,5 @@ clean:
 check:
 	cat ./data.txt
 	./sstats --file=./data.txt --skip_rows=1 --skip_cols=1 --channels=4
+	cat ./anscombe_quartet.csv
+	./sstats --file=./anscombe_quartet.csv --skip_rows=1 --channels=8
