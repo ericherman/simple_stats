@@ -1,7 +1,7 @@
 
 /* ss_options.h - Eric Herman 2014 */
-#ifndef _SS_OPTIONS_H_
-#define _SS_OPTIONS_H_
+#ifndef SS_OPTIONS_H
+#define SS_OPTIONS_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -17,4 +17,4 @@ typedef struct ss_options_ {
 
 void parse_cmdline_args(ss_options_t *options, int argc, char *argv[]);
 
-#endif /* _SS_OPTIONS_H_ */
+#endif /* SS_OPTIONS_H */

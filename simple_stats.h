@@ -1,6 +1,6 @@
 /* simple_stats_t.h - Eric Herman 2014 */
-#ifndef _SIMPLE_STATS_H_
-#define _SIMPLE_STATS_H_
+#ifndef SIMPLE_STATS_H
+#define SIMPLE_STATS_H
 
 #include <stdlib.h>
 
@@ -30,4 +30,4 @@ void simple_stats_t_to_string(simple_stats_t *stats, char *buf, size_t buflen);
 }
 #endif
 
-#endif /* _SIMPLE_STATS_H_ */
+#endif /* SIMPLE_STATS_H */
