@@ -27,7 +27,7 @@ FILE *_ifp_open(const char *file_name, unsigned short *from_file)
 	return fp;
 }
 
-void _lex_col_val(char *line_buf, size_t * lex_pos, char *val_buf)
+void _lex_col_val(char *line_buf, size_t *lex_pos, char *val_buf)
 {
 	size_t len = 0;
 	unsigned char done = 0;
@@ -51,7 +51,7 @@ void _lex_col_val(char *line_buf, size_t * lex_pos, char *val_buf)
 	*lex_pos += len;
 }
 
-void _run(ss_options_t * options)
+void _run(ss_options_t *options)
 {
 	FILE *ifp;
 	simple_stats_t stats[options->channels];

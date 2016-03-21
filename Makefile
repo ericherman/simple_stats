@@ -15,6 +15,9 @@ LDFLAGS=-lm
 
 OBJECTS=$(SOURCES:.c=.o)
 
+# extracted from https://github.com/torvalds/linux/blob/master/scripts/Lindent
+LINDENT=indent -npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1 -il0
+
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
@@ -24,7 +27,15 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) -c $(CFLAGS) $^ -o $@
 
 clean:
-	rm -rf *.o $(EXECUTABLE)
+	rm -rf *.o $(EXECUTABLE) *~
+
+tidy:
+	$(LINDENT) \
+		-T FILE \
+		-T size_t \
+		-T ss_options_t \
+		-T simple_stats_t \
+		*.h *.c
 
 check:
 	cat ./data.txt
