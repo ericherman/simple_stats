@@ -2,7 +2,7 @@
 #include <getopt.h>		/* if you don't hate getopt, you should */
 #include <stdlib.h>
 
-void _init_options(ss_options_t *options)
+void _init_options(ss_options *options)
 {
 	/* initialize to stdin */
 	snprintf(options->file, FILENAME_MAX, "-");
@@ -13,7 +13,7 @@ void _init_options(ss_options_t *options)
 	options->skip_rows = 0;
 }
 
-void parse_cmdline_args(ss_options_t *options, int argc, char *argv[])
+void parse_cmdline_args(ss_options *options, int argc, char *argv[])
 {
 	int opt_char;
 	int option_index;

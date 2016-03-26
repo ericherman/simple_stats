@@ -51,10 +51,10 @@ void _lex_col_val(char *line_buf, size_t *lex_pos, char *val_buf)
 	*lex_pos += len;
 }
 
-void _run(ss_options_t *options)
+void _run(ss_options *options)
 {
 	FILE *ifp;
-	simple_stats_t stats[options->channels];
+	simple_stats stats[options->channels];
 	unsigned short from_file;
 	char line_buf[MAX_LINE_LEN];
 	char val_buf[MAX_VALUE_LEN];
@@ -67,7 +67,7 @@ void _run(ss_options_t *options)
 	double d;
 
 	for (i = 0; i < options->channels; i++) {
-		simple_stats_t_init(&stats[i]);
+		simple_stats_init(&stats[i]);
 	}
 
 	ifp = _ifp_open(options->file, &from_file);
@@ -85,7 +85,7 @@ void _run(ss_options_t *options)
 			}
 			channel = i - options->skip_cols;
 			sscanf(val_buf, "%lf%*s", &d);
-			simple_stats_t_append_val(&stats[channel], d);
+			simple_stats_append_val(&stats[channel], d);
 		}
 	}
 
@@ -94,14 +94,14 @@ void _run(ss_options_t *options)
 	}
 
 	for (i = 0; i < options->channels; i++) {
-		simple_stats_t_to_string(&stats[i], line_buf, MAX_LINE_LEN);
+		simple_stats_to_string(&stats[i], line_buf, MAX_LINE_LEN);
 		printf("channel %u: %s\n", i, line_buf);
 	}
 }
 
 int main(int argc, char *argv[])
 {
-	ss_options_t options;
+	ss_options options;
 
 	parse_cmdline_args(&options, argc, argv);
 

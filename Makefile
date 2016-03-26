@@ -33,8 +33,8 @@ tidy:
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
-		-T ss_options_t \
-		-T simple_stats_t \
+		-T ss_options \
+		-T simple_stats \
 		*.h *.c
 
 check:
