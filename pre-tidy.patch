@@ -1,0 +1,27 @@
+diff --git a/simple_stats.h b/simple_stats.h
+index 4589ed1..809b5de 100644
+--- a/simple_stats.h
++++ b/simple_stats.h
+@@ -4,9 +4,11 @@
+ 
+ #include <stdlib.h>
+ 
++/*
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
++*/
+ 
+ typedef struct simple_stats_s {
+ 	unsigned int cnt;
+@@ -26,8 +28,10 @@ double simple_stats_std_dev(simple_stats *stats);
+ 
+ void simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen);
+ 
++/*
+ #ifdef __cplusplus
+ }
+ #endif
++*/
+ 
+ #endif /* SIMPLE_STATS_H */

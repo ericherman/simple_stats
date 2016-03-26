@@ -30,12 +30,14 @@ clean:
 	rm -rf *.o $(EXECUTABLE) *~
 
 tidy:
+	patch -Np1 -i ./pre-tidy.patch
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
 		-T ss_options \
 		-T simple_stats \
 		*.h *.c
+	patch -Rp1 -i ./pre-tidy.patch
 
 check:
 	cat ./data.txt
