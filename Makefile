@@ -39,7 +39,7 @@ tidy:
 		*.h *.c
 	patch -Rp1 -i ./pre-tidy.patch
 
-check:
+check: $(EXECUTABLE)
 	cat ./data.txt
 	./sstats --file=./data.txt --skip_rows=1 --skip_cols=1 --channels=4
 	cat ./anscombe_quartet.csv
