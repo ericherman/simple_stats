@@ -62,8 +62,7 @@ void _run(ss_options *options)
 	unsigned int cols_skipped = 0;
 	unsigned int columns = options->channels + options->skip_cols;
 	unsigned int channel;
-	unsigned int lex_pos = 0;
-	size_t i;
+	size_t i, lex_pos = 0;
 	double d;
 
 	for (i = 0; i < options->channels; i++) {
@@ -95,7 +94,7 @@ void _run(ss_options *options)
 
 	for (i = 0; i < options->channels; i++) {
 		simple_stats_to_string(&stats[i], line_buf, MAX_LINE_LEN);
-		printf("channel %u: %s\n", i, line_buf);
+		printf("channel %lu: %s\n", (unsigned long) i, line_buf);
 	}
 }
 
