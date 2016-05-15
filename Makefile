@@ -11,7 +11,7 @@ OPTIMIZER_CFLAGS=-ggdb -O0
 CFLAGS=$(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS)
 
 # "-lm" needed by simple_stats.c see also: man 3 sqrt
-LDFLAGS=-lm
+LDADD=-lm
 
 OBJECTS=$(SOURCES:.c=.o)
 
@@ -21,7 +21,7 @@ LINDENT=indent -npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1 -il0
 all: $(SOURCES) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@ $(LDADD)
 
 .c.o:
 	$(CC) -c $(CFLAGS) $^ -o $@
