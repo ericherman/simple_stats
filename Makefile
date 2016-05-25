@@ -28,8 +28,6 @@ $(bin_PROGRAMS): $(OBJECTS)
 .c.o:
 	$(CC) -c $(CFLAGS) $^ -o $@
 
-clean:
-	rm -rf *.o $(bin_PROGRAMS) *~
 
 tidy:
 	patch -Np1 -i ./pre-tidy.patch
@@ -38,11 +36,20 @@ tidy:
 		-T size_t \
 		-T ss_options \
 		-T simple_stats \
-		*.h *.c
+		`find . -name '*.h' -o -name '*.c'`
 	patch -Rp1 -i ./pre-tidy.patch
 
-check: $(bin_PROGRAMS)
+demos: $(bin_PROGRAMS)
 	cat ./data.txt
 	./sstats --file=./data.txt --skip_rows=1 --skip_cols=1 --channels=4
+	@echo ""
 	cat ./anscombe_quartet.csv
 	./sstats --file=./anscombe_quartet.csv --skip_rows=1 --channels=8
+
+spotless:
+	rm -rf `cat .gitignore | sed -e 's/#.*//'`
+
+check: demos
+
+clean:
+	rm -rf *.o $(bin_PROGRAMS) *~
