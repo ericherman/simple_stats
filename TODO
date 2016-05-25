@@ -1,0 +1,4 @@
+simple_stats TODO:
+	* allow for stat pairs, "x,y"
+		* Correlation between x and y
+		* Linear regression line
