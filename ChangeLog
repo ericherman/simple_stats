@@ -1,3 +1,15 @@
+2016-05-28  Eric Herman <eric@freesa.org>
+
+	moved sources in to src/ directory
+	* Makefile: support move
+	* pre-tidy.patch: also
+	* main.c: -> src/main.c
+	* simple_stats.c: -> src/simple_stats.c
+	* simple_stats.h: -> src/simple_stats.h
+	* ss_options.c: -> src/ss_options.c
+	* ss_options.h: -> src/ss_options.h
+
+
 2016-05-25  Eric Herman <eric@freesa.org>
 
 	* Makefile: prep for autotools

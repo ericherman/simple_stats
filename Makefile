@@ -1,9 +1,10 @@
+SHELL:=/bin/bash
 lib_LTLIBRARIES=libsstats.la
 
-include_HEADERS=simple_stats.h
+include_HEADERS=src/simple_stats.h
 
 bin_PROGRAMS=sstats
-sstats_SOURCES=main.c ss_options.c simple_stats.c $(include_HEADERS)
+sstats_SOURCES=src/main.c src/ss_options.c src/simple_stats.c $(include_HEADERS)
 
 CC=gcc
 STD_CFLAGS=--std=c99
@@ -48,6 +49,8 @@ demos: $(bin_PROGRAMS)
 
 spotless:
 	rm -rf `cat .gitignore | sed -e 's/#.*//'`
+	pushd src && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
+	pushd tests && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 
 check: demos
 

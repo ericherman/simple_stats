@@ -1,7 +1,7 @@
-diff --git a/simple_stats.h b/simple_stats.h
+diff --git a/src/simple_stats.h b/src/simple_stats.h
 index 4589ed1..809b5de 100644
---- a/simple_stats.h
-+++ b/simple_stats.h
+--- a/src/simple_stats.h
++++ b/src/simple_stats.h
 @@ -4,9 +4,11 @@
  
  #include <stdlib.h>
