@@ -31,14 +31,14 @@ $(bin_PROGRAMS): $(OBJECTS)
 
 
 tidy:
-	patch -Np1 -i ./pre-tidy.patch
+	patch -Np1 -i misc/pre-tidy.patch
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
 		-T ss_options \
 		-T simple_stats \
 		`find . -name '*.h' -o -name '*.c'`
-	patch -Rp1 -i ./pre-tidy.patch
+	patch -Rp1 -i misc/pre-tidy.patch
 
 demos: $(bin_PROGRAMS)
 	cat tests/data.txt

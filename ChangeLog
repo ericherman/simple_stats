@@ -1,3 +1,9 @@
+2016-06-20  Eric Herman <eric@freesa.org>
+
+	move tidy into misc/ directory
+	* pre-tidy.patch: -> misc/pre-tidy.patch
+	* Makefile: support move
+
 2016-05-28  Eric Herman <eric@freesa.org>
 
 	moved sources in to src/ directory
