@@ -1,3 +1,18 @@
+2016-10-09  Eric Herman <eric@freesa.org>
+
+	LGPLv3+ Boilerplate
+
+	* misc/lgpl-3.0.txt: renamed to COPYING
+	* COPYING: renamed from misc/lgpl-3.0.txt
+	* misc/gpl-3.0.txt: renamed to COPYING.GPL3
+	* COPYING.GPL3: renamed from misc/gpl-3.0.txt
+	* README: reference new names
+	* src/simple_stats.c: copyright, LGPL boilerplate
+	* src/simple_stats.h: copyright, LGPL boilerplate
+	* src/main.c: copyright, LGPL boilerplate
+	* src/ss_options.c: copyright, LGPL boilerplate
+	* src/ss_options.h: copyright, LGPL boilerplate
+
 2016-06-21  Eric Herman <eric@freesa.org>
 
 	move GPL files into misc/
