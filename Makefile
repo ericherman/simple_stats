@@ -9,9 +9,9 @@ sstats_SOURCES=src/main.c src/ss_options.c src/simple_stats.c $(include_HEADERS)
 CC=gcc
 STD_CFLAGS=--std=c99
 NOISY_CFLAGS=-Werror -Wall -Wextra -pedantic
-OPTIMIZER_CFLAGS=-ggdb -O0
+OPTIMIZER_CFLAGS=-ggdb -O0 -fomit-frame-pointer
 
-CFLAGS=$(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS)
+CFLAGS=$(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -pipe
 
 # "-lm" needed by simple_stats.c see also: man 3 sqrt
 LDADD=-lm
