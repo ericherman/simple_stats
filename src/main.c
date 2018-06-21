@@ -111,7 +111,7 @@ void _run(ss_options *options)
 	}
 
 	for (i = 0; i < options->channels; i++) {
-		simple_stats_to_string(&stats[i], line_buf, MAX_LINE_LEN);
+		simple_stats_to_string(&stats[i], line_buf, MAX_LINE_LEN, NULL);
 		printf("%lu: %s\n", (unsigned long)i, line_buf);
 	}
 }

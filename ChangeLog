@@ -1,3 +1,21 @@
+2017-06-22  Eric Herman <eric@freesa.org>
+
+	Allow specifying Bessel's Correction to variance and std-dev.
+	Make the to_string function easier to use in a printf.
+	Add a runnable test-case and a "make check" target.
+
+	* src/simple_stats.h: allow specifying bessel-correction or not
+		for variance and std-dev
+		to_string: return the char *, out-param for bytes written
+	* src/simple_stats.c: add bessel-correction, fix calculation
+	* src/main.c: add NULL written param for to_string call
+	* tests/test-sstats-basic.c: add test with-and-without bessel
+	* tests/echeck.h: copied from E(asy)Check
+	* tests/echeck.c: https://github.com/ericherman/libecheck
+	* misc/pre-tidy.patch: re-spin for header change
+	* Makefile: make check target
+	* .gitignore: ignore test
+
 2016-10-09  Eric Herman <eric@freesa.org>
 
 	LGPLv3+ Boilerplate

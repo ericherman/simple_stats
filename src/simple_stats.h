@@ -38,10 +38,11 @@ void simple_stats_init(simple_stats *stats);
 void simple_stats_append_val(simple_stats *stats, double val);
 
 double simple_stats_average(simple_stats *stats);
-double simple_stats_variance(simple_stats *stats);
-double simple_stats_std_dev(simple_stats *stats);
+double simple_stats_variance(simple_stats *stats, int bessel_correct);
+double simple_stats_std_dev(simple_stats *stats, int bessel_correct);
 
-void simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen);
+char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
+			     int *written);
 
 #ifdef __cplusplus
 }

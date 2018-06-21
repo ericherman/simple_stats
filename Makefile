@@ -40,6 +40,13 @@ tidy:
 		`find . -name '*.h' -o -name '*.c'`
 	patch -Rp1 -i misc/pre-tidy.patch
 
+check:
+	$(CC) $(CFLAGS) -I./src -I./tests \
+		-o test-sstats-basic \
+		tests/test-sstats-basic.c \
+		$(LDADD)
+	./test-sstats-basic
+
 demos: $(bin_PROGRAMS)
 	cat tests/data.txt
 	./sstats --file=tests/data.txt --skip_rows=1 --skip_cols=1 --channels=4

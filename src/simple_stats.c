@@ -49,20 +49,53 @@ double simple_stats_average(simple_stats *stats)
 	return stats->sum / stats->cnt;
 }
 
-double simple_stats_variance(simple_stats *stats)
+double simple_stats_variance(simple_stats *stats, int bessel_correct)
 {
-	return stats->sum_of_squares / stats->cnt;
+	double avg_sum_squared, avg_diff_sum_sq, variance;
+	size_t bassel_cnt;
+
+	/*   avoid division by zero */
+	if (stats->cnt == 0) {
+		return NAN;
+	}
+	if (stats->cnt == 1) {
+		return 0.0;
+	}
+
+	/* https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance */
+
+	/*  Because SumSq and (Sum * Sum)/n can be very similar
+	 *  numbers, cancellation can lead to the precision of the result to
+	 *  be much less than the inherent precision of the floating-point
+	 *  arithmetic used to perform the computation. Thus this algorithm
+	 *  should not be used in practice. */
+
+	bassel_cnt = bessel_correct ? (stats->cnt - 1) : stats->cnt;
+	avg_sum_squared = (stats->sum * stats->sum) / stats->cnt;
+	avg_diff_sum_sq = stats->sum_of_squares - avg_sum_squared;
+	variance = avg_diff_sum_sq / bassel_cnt;
+	return fabs(variance);
 }
 
-double simple_stats_std_dev(simple_stats *stats)
+double simple_stats_std_dev(simple_stats *stats, int bessel_correct)
 {
-	return sqrt(simple_stats_variance(stats));
+	return sqrt(simple_stats_variance(stats, bessel_correct));
 }
 
-void simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen)
+char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
+			     int *written)
 {
-	snprintf(buf, buflen,
-		 "{ cnt: %u, min: %f, max: %f, avg: %f, std-dev: %f }",
-		 stats->cnt, stats->min, stats->max,
-		 simple_stats_average(stats), simple_stats_std_dev(stats));
+	int rv = -1;
+	int bessel_correct = 1;
+	if (buf) {
+		rv = snprintf(buf, buflen,
+			      "{ cnt: %u, min: %f, max: %f, avg: %f, std-dev: %f }",
+			      stats->cnt, stats->min, stats->max,
+			      simple_stats_average(stats),
+			      simple_stats_std_dev(stats, bessel_correct));
+	}
+	if (written) {
+		*written = rv;
+	}
+	return buf;
 }
