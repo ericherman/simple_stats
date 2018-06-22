@@ -4,12 +4,6 @@
 #include "echeck.h"
 #include "echeck.c"
 
-#define check_scaled_double_m(actual, expect, m) \
-	check_double_m(actual, expect, ((expect) * DBL_EPSILON), m)
-
-#define check_scaled_double(actual, expect) \
-	check_scaled_double_m(actual, expect, #actual)
-
 int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		double expect_min, double expect_max, double expect_mean,
 		double expect_variance, double expect_stddev)
@@ -26,17 +20,17 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		simple_stats_append_val(&stats, samples[i]);
 	}
 	errs = 0;
-	errs += check_scaled_double_m(stats.min, expect_min, "min");
-	errs += check_scaled_double_m(stats.max, expect_max, "max");
+	errs += check_double_scaled_epsilon(stats.min, expect_min);
+	errs += check_double_scaled_epsilon(stats.max, expect_max);
 
 	mean = simple_stats_average(&stats);
-	errs += check_scaled_double(mean, expect_mean);
+	errs += check_double_scaled_epsilon(mean, expect_mean);
 
 	variance = simple_stats_variance(&stats, bessel_correct);
-	errs += check_scaled_double(variance, expect_variance);
+	errs += check_double_scaled_epsilon(variance, expect_variance);
 
 	stddev = simple_stats_std_dev(&stats, bessel_correct);
-	errs += check_scaled_double(stddev, expect_stddev);
+	errs += check_double_scaled_epsilon(stddev, expect_stddev);
 
 	if (errs) {
 		fprintf(stderr, "%s\n",
