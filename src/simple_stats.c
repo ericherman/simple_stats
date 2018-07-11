@@ -22,6 +22,13 @@
 #include <math.h>
 #include <float.h>
 
+const char *Simple_stats_version = "1.0.1";
+
+const char *simple_stats_version()
+{
+	return Simple_stats_version;
+}
+
 void simple_stats_init(simple_stats *stats)
 {
 	stats->cnt = 0;

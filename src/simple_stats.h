@@ -44,6 +44,8 @@ double simple_stats_std_dev(simple_stats *stats, int bessel_correct);
 char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 			     int *written);
 
+const char *simple_stats_version();
+
 #ifdef __cplusplus
 }
 #endif

@@ -33,4 +33,6 @@ typedef struct ss_options_s {
 
 void parse_cmdline_args(ss_options *options, int argc, char *argv[]);
 
+int print_help(const char *argv0, const char *version, FILE *out, int *error);
+
 #endif /* SS_OPTIONS_H */

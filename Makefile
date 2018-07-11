@@ -40,12 +40,14 @@ tidy:
 		`find . -name '*.h' -o -name '*.c'`
 	patch -Rp1 -i misc/pre-tidy.patch
 
-check: $(sstats_SOURCES) $(OBJECTS)
+test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
 	$(CC) $(CFLAGS) -I./src -I./tests \
 		-o test-sstats-basic \
 		tests/test-sstats-basic.c \
 		$(LDADD)
 	./test-sstats-basic
+
+check: test-sstats-basic
 
 demos: $(bin_PROGRAMS)
 	cat tests/data.txt
@@ -60,4 +62,4 @@ spotless:
 	pushd tests && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 
 clean:
-	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*.~
+	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*.~ ./test-sstats-basic

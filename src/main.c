@@ -29,19 +29,16 @@
 FILE *_ifp_open(const char *file_name, unsigned short *from_file)
 {
 	FILE *fp;
+	unsigned short _from_file;
 	const char *mode = "r";
 
-	*from_file = (strcmp("-", file_name) != 0);
-
-	if (*from_file) {
-		fp = fopen(file_name, mode);
-		if (fp == NULL) {
-			fprintf(stderr, "can not open '%s'\n", file_name);
-			exit(-1);
-		}
-	} else {
-		fp = stdin;
+	_from_file = (strcmp("-", file_name) != 0);
+	if (from_file) {
+		*from_file = _from_file;
 	}
+
+	fp = (_from_file) ? fopen(file_name, mode) : stdin;
+
 	return fp;
 }
 
@@ -69,10 +66,10 @@ void _lex_col_val(char *line_buf, size_t *lex_pos, char *val_buf)
 	*lex_pos += len;
 }
 
-void _run(ss_options *options)
+simple_stats **_run(ss_options *options)
 {
 	FILE *ifp;
-	simple_stats stats[options->channels];
+	simple_stats **stats;
 	unsigned short from_file;
 	char line_buf[MAX_LINE_LEN];
 	char val_buf[MAX_VALUE_LEN];
@@ -83,11 +80,24 @@ void _run(ss_options *options)
 	size_t i, lex_pos = 0;
 	double d;
 
+	stats = malloc(sizeof(simple_stats *) * options->channels);
+	if (!stats) {
+		exit(EXIT_FAILURE);
+	}
+
 	for (i = 0; i < options->channels; i++) {
-		simple_stats_init(&stats[i]);
+		stats[i] = malloc(sizeof(simple_stats));
+		if (!stats[i]) {
+			exit(EXIT_FAILURE);
+		}
+		simple_stats_init(stats[i]);
 	}
 
 	ifp = _ifp_open(options->file, &from_file);
+	if (ifp == NULL) {
+		fprintf(stderr, "can not open '%s'\n", options->file);
+		exit(-1);
+	}
 
 	while (fgets(line_buf, MAX_LINE_LEN, ifp) != NULL) {
 		if (rows_skipped++ < options->skip_rows) {
@@ -102,27 +112,56 @@ void _run(ss_options *options)
 			}
 			channel = i - options->skip_cols;
 			sscanf(val_buf, "%lf%*s", &d);
-			simple_stats_append_val(&stats[channel], d);
+			simple_stats_append_val(stats[channel], d);
 		}
 	}
 
 	if (from_file) {
 		fclose(ifp);
 	}
+	return stats;
+}
 
-	for (i = 0; i < options->channels; i++) {
-		simple_stats_to_string(&stats[i], line_buf, MAX_LINE_LEN, NULL);
-		printf("%lu: %s\n", (unsigned long)i, line_buf);
+void _display_stats(simple_stats **stats, size_t len)
+{
+	size_t i;
+	char line_buf[MAX_LINE_LEN];
+
+	for (i = 0; i < len; i++) {
+		simple_stats_to_string(stats[i], line_buf, MAX_LINE_LEN, NULL);
+		fprintf(stdout, "%lu: %s\n", (unsigned long)i, line_buf);
 	}
+
 }
 
 int main(int argc, char *argv[])
 {
 	ss_options options;
+	simple_stats **stats;
+	size_t i;
 
 	parse_cmdline_args(&options, argc, argv);
 
-	_run(&options);
+	if (options.help) {
+		print_help(argv[0], simple_stats_version(), stdout, NULL);
+		return 0;
+	}
+
+	if (options.version) {
+		printf("%s\n", simple_stats_version());
+		return 0;
+	}
+
+	stats = _run(&options);
+
+	_display_stats(stats, options.channels);
+
+	for (i = options.channels; i > 0; --i) {
+		free(stats[i - 1]);
+		stats[i - 1] = NULL;
+	}
+	free(stats);
+	stats = NULL;
 
 	return 0;
 }

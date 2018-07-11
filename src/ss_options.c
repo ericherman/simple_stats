@@ -40,8 +40,8 @@ void parse_cmdline_args(ss_options *options, int argc, char *argv[])
 	const char *optstring = "hvf::c::x::y::";
 
 	struct option long_options[] = {
-		{"help", no_argument, 0, 1},
-		{"version", no_argument, 0, 1},
+		{"help", no_argument, 0, 'h'},
+		{"version", no_argument, 0, 'v'},
 		{"file", optional_argument, 0, 'f'},
 		{"channels", optional_argument, 0, 'c'},
 		{"skip_cols", optional_argument, 0, 'x'},
@@ -89,4 +89,62 @@ void parse_cmdline_args(ss_options *options, int argc, char *argv[])
 			break;
 		}
 	}
+}
+
+#define _safe_print(rv, written, err, end_target, out, format) \
+	do { \
+		rv = fprintf(out, format); \
+		if (rv < 0) { \
+			if (err) { \
+				*err = rv; \
+			} \
+			goto end_target; \
+		} else { \
+			written += rv; \
+		} \
+	} while (0)
+
+#define _safe_printf(rv, written, err, end_target, out, format, ...) \
+	do { \
+		rv = fprintf(out, format, __VA_ARGS__); \
+		if (rv < 0) { \
+			if (err) { \
+				*err = rv; \
+			} \
+			goto end_target; \
+		} else { \
+			written += rv; \
+		} \
+	} while (0)
+
+int print_help(const char *argv0, const char *version, FILE *out, int *error)
+{
+	int rv, written;
+	written = 0;
+	if (!out) {
+		return written;
+	}
+
+	_safe_printf(rv, written, error, end_print_help, out, "%s version %s\n",
+		     argv0, version);
+	_safe_print(rv, written, error, end_print_help, out, "OPTIONS:\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-f --file=name\t\tPath to input file or '-' for stdin\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-c --channels=n\t\tNumber of columns to collect data from\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-x --skip_cols=n\tExclude 'n' columns from data\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "\t\t\t(useful for ignoring a label column)\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-y --skip_rows=n\tExclude 'n' rows from input data\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "\t\t\t(useful for ignoring header row)\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-h --help\t\tThis message\n");
+	_safe_print(rv, written, error, end_print_help, out,
+		    "-v --version\t\tPrint version\n");
+
+end_print_help:
+	return written;
 }

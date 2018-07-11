@@ -12,9 +12,9 @@
  
  typedef struct simple_stats_s {
  	unsigned int cnt;
-@@ -44,8 +46,10 @@
- char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
- 			     int *written);
+@@ -46,8 +48,10 @@
+ 
+ const char *simple_stats_version();
  
 +/*
  #ifdef __cplusplus
