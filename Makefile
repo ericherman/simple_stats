@@ -11,7 +11,7 @@ STD_CFLAGS=--std=c99
 NOISY_CFLAGS=-Werror -Wall -Wextra -pedantic
 OPTIMIZER_CFLAGS=-ggdb -O0 -fomit-frame-pointer
 
-CFLAGS=$(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -pipe
+CFLAGS += $(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -fPIC -pipe
 
 # "-lm" needed by simple_stats.c see also: man 3 sqrt
 LDADD=-lm
@@ -60,4 +60,4 @@ spotless:
 	pushd tests && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 
 clean:
-	rm -rf *.o $(bin_PROGRAMS) *~
+	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*.~
