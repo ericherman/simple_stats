@@ -19,11 +19,11 @@
 #ifndef SIMPLE_STATS_H
 #define SIMPLE_STATS_H
 
-#include <stdlib.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h>
 
 typedef struct simple_stats_s {
 	unsigned int cnt;
@@ -40,6 +40,14 @@ void simple_stats_append_val(simple_stats *stats, double val);
 double simple_stats_average(simple_stats *stats);
 double simple_stats_variance(simple_stats *stats, int bessel_correct);
 double simple_stats_std_dev(simple_stats *stats, int bessel_correct);
+
+simple_stats **simple_stats_from_file(const char *file_name,
+				      unsigned int channels,
+				      unsigned int skip_cols,
+				      unsigned int skip_rows,
+				      char *line_buf, size_t line_buf_len,
+				      char *val_buf, size_t val_buf_len,
+				      FILE *err, size_t *len);
 
 char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 			     int *written);

@@ -26,110 +26,14 @@
 #define MAX_LINE_LEN 2000
 #define MAX_VALUE_LEN MAX_LINE_LEN
 
-FILE *_ifp_open(const char *file_name, unsigned short *from_file)
-{
-	FILE *fp;
-	unsigned short _from_file;
-	const char *mode = "r";
-
-	_from_file = (strcmp("-", file_name) != 0);
-	if (from_file) {
-		*from_file = _from_file;
-	}
-
-	fp = (_from_file) ? fopen(file_name, mode) : stdin;
-
-	return fp;
-}
-
-void _lex_col_val(char *line_buf, size_t *lex_pos, char *val_buf)
-{
-	size_t len = 0;
-	unsigned char done = 0;
-	char *c;
-
-	while (!done) {
-		c = (line_buf + *lex_pos + len++);
-		switch (*c) {
-		case '\0':
-		case '\n':
-		case ',':
-			{
-				done = 1;
-			}
-		default:
-			break;
-		}
-	}
-	strncpy(val_buf, line_buf + *lex_pos, len);
-	val_buf[(!done || !len) ? len : len - 1] = '\0';
-	*lex_pos += len;
-}
-
-simple_stats **_run(ss_options *options)
-{
-	FILE *ifp;
-	simple_stats **stats;
-	unsigned short from_file;
-	char line_buf[MAX_LINE_LEN];
-	char val_buf[MAX_VALUE_LEN];
-	unsigned int rows_skipped = 0;
-	unsigned int cols_skipped = 0;
-	unsigned int columns = options->channels + options->skip_cols;
-	unsigned int channel;
-	size_t i, lex_pos = 0;
-	double d;
-
-	stats = malloc(sizeof(simple_stats *) * options->channels);
-	if (!stats) {
-		exit(EXIT_FAILURE);
-	}
-
-	for (i = 0; i < options->channels; i++) {
-		stats[i] = malloc(sizeof(simple_stats));
-		if (!stats[i]) {
-			exit(EXIT_FAILURE);
-		}
-		simple_stats_init(stats[i]);
-	}
-
-	ifp = _ifp_open(options->file, &from_file);
-	if (ifp == NULL) {
-		fprintf(stderr, "can not open '%s'\n", options->file);
-		exit(-1);
-	}
-
-	while (fgets(line_buf, MAX_LINE_LEN, ifp) != NULL) {
-		if (rows_skipped++ < options->skip_rows) {
-			continue;
-		}
-		cols_skipped = 0;
-		lex_pos = 0;
-		for (i = 0; i < columns; i++) {
-			_lex_col_val(line_buf, &lex_pos, val_buf);
-			if (cols_skipped++ < options->skip_cols) {
-				continue;
-			}
-			channel = i - options->skip_cols;
-			sscanf(val_buf, "%lf%*s", &d);
-			simple_stats_append_val(stats[channel], d);
-		}
-	}
-
-	if (from_file) {
-		fclose(ifp);
-	}
-	return stats;
-}
-
-void _display_stats(simple_stats **stats, size_t len)
+void _display_stats(FILE *out, simple_stats **stats, size_t len, char *line_buf,
+		    size_t line_buf_len)
 {
 	size_t i;
-	char line_buf[MAX_LINE_LEN];
 
 	for (i = 0; i < len; i++) {
-		simple_stats_to_string(stats[i], line_buf, MAX_LINE_LEN, NULL);
-		fprintf(stdout, "%lu: %s\n", (unsigned long)i, line_buf);
+		simple_stats_to_string(stats[i], line_buf, line_buf_len, NULL);
+		fprintf(out, "%lu: %s\n", (unsigned long)i, line_buf);
 	}
 
 }
@@ -138,7 +42,9 @@ int main(int argc, char *argv[])
 {
 	ss_options options;
 	simple_stats **stats;
-	size_t i;
+	char line_buf[MAX_LINE_LEN];
+	char val_buf[MAX_VALUE_LEN];
+	size_t len, i;
 
 	parse_cmdline_args(&options, argc, argv);
 
@@ -152,16 +58,23 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	stats = _run(&options);
+	stats =
+	    simple_stats_from_file(options.file, options.channels,
+				   options.skip_cols, options.skip_rows,
+				   line_buf, MAX_LINE_LEN, val_buf,
+				   MAX_VALUE_LEN, stderr, &len);
+	if (!stats) {
+		return EXIT_FAILURE;
+	}
 
-	_display_stats(stats, options.channels);
+	_display_stats(stdout, stats, len, line_buf, MAX_LINE_LEN);
 
-	for (i = options.channels; i > 0; --i) {
+	for (i = len; i > 0; --i) {
 		free(stats[i - 1]);
 		stats[i - 1] = NULL;
 	}
 	free(stats);
 	stats = NULL;
 
-	return 0;
+	return EXIT_SUCCESS;
 }

@@ -1,6 +1,12 @@
 A simple statistics collecting library.
 A simple commandline utility for reading statistics from .csv files
 
+Building
+--------
+make clean &&
+make check &&
+make demos
+
 License
 -------
 All content is Licensed under the terms of the

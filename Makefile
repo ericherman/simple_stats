@@ -50,10 +50,13 @@ test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
 check: test-sstats-basic
 
 demos: $(bin_PROGRAMS)
+	@echo ""
 	cat tests/data.txt
+	@echo ""
 	./sstats --file=tests/data.txt --skip_rows=1 --skip_cols=1 --channels=4
 	@echo ""
 	cat tests/anscombe_quartet.csv
+	@echo ""
 	./sstats --file=tests/anscombe_quartet.csv --skip_rows=1 --channels=8
 
 spotless:

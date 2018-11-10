@@ -34,13 +34,12 @@ extern "C" {
 #define ECHECK_FUNC __func__
 #else
 #define ECHECK_FUNC NULL
-#endif				/* _GNU_SOURCE */
-#endif				/* __STDC_VERSION__ */
+#endif /* _GNU_SOURCE */
+#endif /* __STDC_VERSION__ */
 
 /*check char*/
-	int echeck_char_m(FILE *err, const char *func, const char *file,
-			  int line, char actual, char expected,
-			  const char *msg);
+int echeck_char_m(FILE *err, const char *func, const char *file, int line,
+		  char actual, char expected, const char *msg);
 
 #define fcheck_char_m(log, actual, expected, msg)\
 	echeck_char_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -59,9 +58,8 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check long */
-	int echeck_long_m(FILE *err, const char *func, const char *file,
-			  int line, long actual, long expected,
-			  const char *msg);
+int echeck_long_m(FILE *err, const char *func, const char *file, int line,
+		  long actual, long expected, const char *msg);
 
 #define fcheck_long_m(log, actual, expected, msg)\
 	echeck_long_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -100,9 +98,8 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check str */
-	int echeck_str_m(FILE *err, const char *func, const char *file,
-			 int line, const char *actual, const char *expected,
-			 const char *msg);
+int echeck_str_m(FILE *err, const char *func, const char *file, int line,
+		 const char *actual, const char *expected, const char *msg);
 
 #define fcheck_str_m(log, actual, expected, msg)\
 	echeck_str_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -121,9 +118,8 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check ptr */
-	int echeck_ptr_m(FILE *err, const char *func, const char *file,
-			 int line, const void *actual, const void *expected,
-			 const char *msg);
+int echeck_ptr_m(FILE *err, const char *func, const char *file, int line,
+		 const void *actual, const void *expected, const char *msg);
 
 #define fcheck_ptr_m(log, actual, expected, msg)\
 	echeck_ptr_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -142,10 +138,9 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check unsigned long */
-	int echeck_unsigned_long_m(FILE *err, const char *func,
-				   const char *file, int line,
-				   unsigned long actual, unsigned long expected,
-				   const char *msg);
+int echeck_unsigned_long_m(FILE *err, const char *func, const char *file,
+			   int line, unsigned long actual,
+			   unsigned long expected, const char *msg);
 
 #define fcheck_unsigned_long_m(log, actual, expected, msg)\
 	echeck_unsigned_long_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -184,9 +179,8 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check size_t */
-	int echeck_size_t_m(FILE *err, const char *func, const char *file,
-			    int line, size_t actual, size_t expected,
-			    const char *msg);
+int echeck_size_t_m(FILE *err, const char *func, const char *file, int line,
+		    size_t actual, size_t expected, const char *msg);
 
 #define fcheck_size_t_m(log, actual, expected, msg)\
 	echeck_size_t_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -205,11 +199,10 @@ extern "C" {
 		 actual, expected, #actual)
 
 /* check byte_array */
-	int echeck_byte_array_m(FILE *err, const char *func, const char *file,
-				int line, const unsigned char *actual,
-				size_t actual_len,
-				const unsigned char *expected,
-				size_t expected_len, const char *msg);
+int echeck_byte_array_m(FILE *err, const char *func, const char *file, int line,
+			const unsigned char *actual, size_t actual_len,
+			const unsigned char *expected, size_t expected_len,
+			const char *msg);
 
 #define fcheck_byte_array_m(log, actual, actual_len, expected, expected_len,\
 	msg)\
@@ -229,9 +222,9 @@ extern "C" {
 		 actual, actual_len, expected, expected_len, #actual)
 
 /* check double */
-	int echeck_double_m(FILE *err, const char *func, const char *file,
-			    int line, double actual, double expected,
-			    double epsilon, const char *msg);
+int echeck_double_m(FILE *err, const char *func, const char *file, int line,
+		    double actual, double expected, double epsilon,
+		    const char *msg);
 
 #define fcheck_double_m(log, actual, expected, epsilon, msg)\
 	echeck_double_m(log, ECHECK_FUNC, __FILE__, __LINE__,\
@@ -273,8 +266,8 @@ extern "C" {
 
 /*check status*/
 /* safe casting of non-zero int to avoid EXIT_SUCCESS */
-	char echeck_status_m(FILE *err, const char *func, const char *file,
-			     int line, int val, const char *msg);
+char echeck_status_m(FILE *err, const char *func, const char *file, int line,
+		     int val, const char *msg);
 
 #define fcheck_status_m(log, val, msg)\
 	echeck_status_m(log, ECHECK_FUNC, __FILE__, __LINE__, val, msg)
@@ -291,4 +284,5 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-#endif				/* ECHECK_H */
+
+#endif /* ECHECK_H */

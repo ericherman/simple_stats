@@ -18,9 +18,11 @@
 */
 
 #include "simple_stats.h"
-#include <stdio.h>
-#include <math.h>
 #include <float.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 const char *Simple_stats_version = "1.0.1";
 
@@ -105,4 +107,130 @@ char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 		*written = rv;
 	}
 	return buf;
+}
+
+static FILE *_ifp_open(const char *file_name, unsigned short *from_file)
+{
+	FILE *fp;
+	unsigned short _from_file;
+	const char *mode = "r";
+
+	_from_file = (strcmp("-", file_name) != 0);
+	if (from_file) {
+		*from_file = _from_file;
+	}
+
+	fp = (_from_file) ? fopen(file_name, mode) : stdin;
+
+	return fp;
+}
+
+static void _lex_col_val(char *line_buf, size_t line_buf_len, size_t *lex_pos,
+			 char *val_buf, size_t val_buf_len)
+{
+	size_t maxlen, len = 0;
+	unsigned char done = 0;
+	char *c;
+
+	while (!done && len < line_buf_len) {
+		c = (line_buf + *lex_pos + len++);
+		switch (*c) {
+		case '\0':
+		case '\n':
+		case ',':
+			{
+				done = 1;
+			}
+		default:
+			break;
+		}
+	}
+	if (len > val_buf_len) {
+		fprintf(stderr, "len > val_buf_len (%lu > %lu)\n",
+			(unsigned long)len, (unsigned long)val_buf_len);
+		maxlen = val_buf_len;
+	} else {
+		maxlen = len;
+	}
+	strncpy(val_buf, line_buf + *lex_pos, maxlen);
+	val_buf[(!done || !maxlen) ? maxlen : maxlen - 1] = '\0';
+	*lex_pos += len;
+}
+
+simple_stats **simple_stats_from_file(const char *file_name,
+				      unsigned int channels,
+				      unsigned int skip_cols,
+				      unsigned int skip_rows,
+				      char *line_buf, size_t line_buf_len,
+				      char *val_buf, size_t val_buf_len,
+				      FILE *err, size_t *len)
+{
+	simple_stats **stats;
+	FILE *ifp;
+	unsigned short from_file;
+	unsigned int rows_skipped = 0;
+	unsigned int cols_skipped = 0;
+	unsigned int channel;
+	unsigned int columns;
+	size_t i, local_len, size, lex_pos = 0;
+	double d;
+
+	if (!len) {
+		len = &local_len;
+	}
+	*len = 0;
+
+	size = (sizeof(simple_stats *) * (1 + channels));
+	stats = calloc(1, size);
+	if (!stats) {
+		fprintf(err, "failed to alloc %lu bytes?\n",
+			(unsigned long)size);
+		return NULL;
+	}
+
+	for (i = 0; i < channels; i++) {
+		size = sizeof(simple_stats);
+		stats[i] = malloc(size);
+		if (!stats[i]) {
+			fprintf(err, "failed to alloc %lu bytes?\n",
+				(unsigned long)size);
+		} else {
+			++(*len);
+			simple_stats_init(stats[i]);
+		}
+	}
+	if (!(*len)) {
+		free(stats);
+		return NULL;
+	}
+
+	ifp = _ifp_open(file_name, &from_file);
+	if (ifp == NULL) {
+		fprintf(stderr, "can not open '%s'\n", file_name);
+		return stats;
+	}
+
+	columns = skip_cols + *len;
+	while (fgets(line_buf, line_buf_len, ifp) != NULL) {
+		if (rows_skipped++ < skip_rows) {
+			continue;
+		}
+		cols_skipped = 0;
+		lex_pos = 0;
+		for (i = 0; i < columns; i++) {
+			_lex_col_val(line_buf, line_buf_len, &lex_pos, val_buf,
+				     val_buf_len);
+			if (cols_skipped++ < skip_cols) {
+				continue;
+			}
+			channel = i - skip_cols;
+			sscanf(val_buf, "%lf%*s", &d);
+			simple_stats_append_val(stats[channel], d);
+		}
+	}
+
+	if (from_file) {
+		fclose(ifp);
+	}
+	return stats;
 }
