@@ -7,9 +7,9 @@ bin_PROGRAMS=sstats
 sstats_SOURCES=src/main.c src/ss_options.c src/simple_stats.c $(include_HEADERS)
 
 CC=gcc
-STD_CFLAGS=--std=c99
-NOISY_CFLAGS=-Werror -Wall -Wextra -pedantic
-OPTIMIZER_CFLAGS=-ggdb -O0 -fomit-frame-pointer
+STD_CFLAGS=--std=c99 -pedantic
+NOISY_CFLAGS=-Werror -Wall -Wextra
+OPTIMIZER_CFLAGS=-ggdb -O2 -DNDEBUG -fomit-frame-pointer
 
 CFLAGS += $(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -fPIC -pipe
 

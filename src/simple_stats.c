@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 const char *Simple_stats_version = "1.0.1";
 
@@ -33,6 +34,7 @@ const char *simple_stats_version()
 
 void simple_stats_init(simple_stats *stats)
 {
+	assert(stats);
 	stats->cnt = 0;
 	stats->min = DBL_MAX;
 	stats->max = -DBL_MAX;
@@ -42,6 +44,7 @@ void simple_stats_init(simple_stats *stats)
 
 void simple_stats_append_val(simple_stats *stats, double val)
 {
+	assert(stats);
 	stats->cnt++;
 	if (stats->min > val) {
 		stats->min = val;
@@ -55,6 +58,7 @@ void simple_stats_append_val(simple_stats *stats, double val)
 
 double simple_stats_average(simple_stats *stats)
 {
+	assert(stats);
 	return stats->sum / stats->cnt;
 }
 
@@ -62,6 +66,8 @@ double simple_stats_variance(simple_stats *stats, int bessel_correct)
 {
 	double avg_sum_squared, avg_diff_sum_sq, variance;
 	size_t bassel_cnt;
+
+	assert(stats);
 
 	/*   avoid division by zero */
 	if (stats->cnt == 0) {
@@ -96,6 +102,9 @@ char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 {
 	int rv = -1;
 	int bessel_correct = 1;
+
+	assert(stats);
+
 	if (buf) {
 		rv = snprintf(buf, buflen,
 			      "{ cnt: %u, min: %f, max: %f, avg: %f, std-dev: %f }",
@@ -183,6 +192,7 @@ simple_stats **simple_stats_from_file(const char *file_name,
 	size = (sizeof(simple_stats *) * (1 + channels));
 	stats = calloc(1, size);
 	if (!stats) {
+		fprintf(err, "%s:%d: ", __FILE__, __LINE__);
 		fprintf(err, "failed to alloc %lu bytes?\n",
 			(unsigned long)size);
 		return NULL;
@@ -192,8 +202,9 @@ simple_stats **simple_stats_from_file(const char *file_name,
 		size = sizeof(simple_stats);
 		stats[i] = malloc(size);
 		if (!stats[i]) {
-			fprintf(err, "failed to alloc %lu bytes?\n",
-				(unsigned long)size);
+			fprintf(err, "%s:%d: ", __FILE__, __LINE__);
+			fprintf(err, "alloc %lu bytes failed? (stats[%lu])\n",
+				(unsigned long)size, (unsigned long)i);
 		} else {
 			++(*len);
 			simple_stats_init(stats[i]);
@@ -232,5 +243,6 @@ simple_stats **simple_stats_from_file(const char *file_name,
 	if (from_file) {
 		fclose(ifp);
 	}
+
 	return stats;
 }
