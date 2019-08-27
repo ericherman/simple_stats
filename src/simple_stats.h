@@ -1,38 +1,41 @@
-/* simple_stats.h stats library API
-   Copyright (C) 2014, 2016 Eric Herman <eric@freesa.org>
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+/* simple_stats.h stats library API */
+/* Copyright (C) 2014, 2016, 2019 Eric Herman <eric@freesa.org> */
+/* https://github.com/ericherman/simple_stats */
 
-   This work is free software: you can redistribute it and/or modify it
-   under the terms of the GNU Lesser General Public License as
-   published by the Free Software Foundation, either version 3 of the
-   License, or (at your option) any later version.
-
-   This work is distributed in the hope that it will be useful, but
-   WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License and the GNU General Public License for
-   more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License (COPYING) and the GNU General Public License (COPYING.GPL3).
-   If not, see <http://www.gnu.org/licenses/>.
-*/
 #ifndef SIMPLE_STATS_H
 #define SIMPLE_STATS_H
 
 #ifdef __cplusplus
-extern "C" {
+#define Simple_stats_begin_C_functions extern "C" {
+#define Simple_stats_end_C_functions }
+#else
+#define Simple_stats_begin_C_functions
+#define Simple_stats_end_C_functions
 #endif
 
 #include <stdio.h>
 
-typedef struct simple_stats_s {
+/*
+ * Context struct used for all functions
+ * typdef'ed as "simple_stats", or use "struct simple_stats_s"
+ * simply pass in a valid struct pointer, from stack or malloc/free
+ * the struct has no pointers, and thus requires no need for constructors
+ * or destructors, only the "simple_stats_init" function
+ */
+struct simple_stats_s {
 	unsigned int cnt;
 	double min;
 	double max;
 	double sum;
 	double sum_of_squares;
-} simple_stats;
+};
+typedef struct simple_stats_s simple_stats;
 
+Simple_stats_begin_C_functions
+#undef Simple_stats_begin_C_functions
+/* functions */
+/* init: caller is only required to pass in a valid struct pointer */
 void simple_stats_init(simple_stats *stats);
 
 void simple_stats_append_val(simple_stats *stats, double val);
@@ -54,8 +57,6 @@ char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 
 const char *simple_stats_version();
 
-#ifdef __cplusplus
-}
-#endif
-
+Simple_stats_end_C_functions
+#undef Simple_stats_end_C_functions
 #endif /* SIMPLE_STATS_H */

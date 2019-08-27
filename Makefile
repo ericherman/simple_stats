@@ -1,3 +1,8 @@
+# SPDX-License-Identifier: LGPL-3.0-or-later
+# Makefile
+# Copyright (C) 2014 - 2019 Eric Herman <eric@freesa.org>
+# https://github.com/ericherman/simple_stats
+
 SHELL:=/bin/bash
 lib_LTLIBRARIES=libsstats.la
 
@@ -31,14 +36,12 @@ $(bin_PROGRAMS): $(OBJECTS)
 
 
 tidy:
-	patch -Np1 -i misc/pre-tidy.patch
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
 		-T ss_options \
 		-T simple_stats \
 		`find . -name '*.h' -o -name '*.c'`
-	patch -Rp1 -i misc/pre-tidy.patch
 
 test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
 	$(CC) $(CFLAGS) -I./src -I./tests \
@@ -58,6 +61,12 @@ demos: $(bin_PROGRAMS)
 	cat tests/anscombe_quartet.csv
 	@echo ""
 	./sstats --file=tests/anscombe_quartet.csv --skip_rows=1 --channels=8
+
+# alias
+demo: demos
+
+#alias
+test: check
 
 spotless:
 	rm -rf `cat .gitignore | sed -e 's/#.*//'`
