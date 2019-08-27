@@ -1,26 +1,17 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
 /* echeck.h */
-/*
-libecheck: "E(asy)Check" boiler-plate to make simple testing easier
-Copyright (C) 2016, 2017 Eric Herman <eric@freesa.org>
+/* libecheck: "E(asy)Check" boiler-plate to make simple testing easier */
+/* Copyright (C) 2016, 2017, 2018, 2019 Eric Herman <eric@freesa.org> */
 
-This work is free software: you can redistribute it and/or modify it
-under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or (at
-your option) any later version.
-
-This work is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public
-License for more details.
-
-	https://www.gnu.org/licenses/lgpl-3.0.txt
-	https://www.gnu.org/licenses/gpl-3.0.txt
-*/
 #ifndef ECHECK_H
 #define ECHECK_H
 
 #ifdef __cplusplus
-extern "C" {
+#define Echeck_begin_C_functions extern "C" {
+#define Echeck_end_C_functions }
+#else
+#define Echeck_begin_C_functions
+#define Echeck_end_C_functions
 #endif
 
 #include <stdlib.h>		/* for size_t */
@@ -37,6 +28,7 @@ extern "C" {
 #endif /* _GNU_SOURCE */
 #endif /* __STDC_VERSION__ */
 
+Echeck_begin_C_functions
 /*check char*/
 int echeck_char_m(FILE *err, const char *func, const char *file, int line,
 		  char actual, char expected, const char *msg);
@@ -281,8 +273,7 @@ char echeck_status_m(FILE *err, const char *func, const char *file, int line,
 #define check_status(val)\
 	echeck_status_m(stderr, ECHECK_FUNC, __FILE__, __LINE__, val, NULL)
 
-#ifdef __cplusplus
-}
-#endif
-
+Echeck_end_C_functions
+#undef Echeck_begin_C_functions
+#undef Echeck_end_C_functions
 #endif /* ECHECK_H */
