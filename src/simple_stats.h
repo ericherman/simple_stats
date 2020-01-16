@@ -55,7 +55,7 @@ simple_stats **simple_stats_from_file(const char *file_name,
 char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
 			     int *written);
 
-const char *simple_stats_version();
+const char *simple_stats_version(void);
 
 Simple_stats_end_C_functions
 #undef Simple_stats_end_C_functions

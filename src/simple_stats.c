@@ -13,7 +13,7 @@
 
 const char *Simple_stats_version = "1.0.1";
 
-const char *simple_stats_version()
+const char *simple_stats_version(void)
 {
 	return Simple_stats_version;
 }
