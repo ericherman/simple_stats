@@ -147,8 +147,12 @@ static void _lex_col_val(char *line_buf, size_t line_buf_len, size_t *lex_pos,
 	} else {
 		maxlen = len;
 	}
-	strncpy(val_buf, line_buf + *lex_pos, maxlen);
-	val_buf[(!done || !maxlen) ? maxlen : maxlen - 1] = '\0';
+	if (maxlen) {
+		strncpy(val_buf, line_buf + *lex_pos, maxlen);
+	}
+	if (val_buf_len) {
+		val_buf[val_buf_len - 1] = '\0';
+	}
 	*lex_pos += len;
 }
 
