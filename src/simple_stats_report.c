@@ -16,7 +16,7 @@ char *simple_stats_to_string(struct simple_stats *stats, char *buf,
 	int rv = -1;
 	int bessel_correct = 1;
 
-	if (buf) {
+	if (buf && stats) {
 		rv = snprintf(buf, buflen,
 			      "{ cnt: %u, min: %f, max: %f, avg: %f, std-dev: %f }",
 			      stats->cnt, stats->min, stats->max,

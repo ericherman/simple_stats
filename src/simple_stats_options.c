@@ -8,7 +8,7 @@
 #include <getopt.h>		/* if you don't hate getopt, you should */
 #include <stdlib.h>
 
-static void _init_options(struct simple_stats_options *options)
+static void simple_stats_init_options(struct simple_stats_options *options)
 {
 	/* initialize to stdin */
 	snprintf(options->filename_buf, options->filename_buf_len, "-");
@@ -38,7 +38,7 @@ void simple_stats_parse_args(struct simple_stats_options *options, int argc,
 		{ 0, 0, 0, 0 }
 	};
 
-	_init_options(options);
+	simple_stats_init_options(options);
 
 	while (1) {
 		option_index = 0;

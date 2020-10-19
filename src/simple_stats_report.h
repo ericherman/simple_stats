@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
-/* simple_stats_report.h stats library API */
+/* simple_stats_report.h stats report API */
 /* Copyright (C) 2014, 2016, 2019, 2020 Eric Herman <eric@freesa.org> */
 /* https://github.com/ericherman/simple_stats */
 
