@@ -45,10 +45,10 @@ tidy:
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
-		`find . -name '*.h' -o -name '*.c'`
+		`find src tests -name '*.h' -o -name '*.c'`
 
 test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
-	$(CC) $(CFLAGS) -I./src -I./tests \
+	$(CC) $(CFLAGS) -I./src -I./tests -I./submodules/libecheck/src \
 		-o test-sstats-basic \
 		tests/test-sstats-basic.c \
 		$(LDADD)

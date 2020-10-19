@@ -3,6 +3,7 @@ A simple commandline utility for reading statistics from .csv files
 
 Building
 --------
+git submodule update --init --recursive &&
 make clean &&
 make check &&
 make demos
