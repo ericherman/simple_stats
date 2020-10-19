@@ -7,7 +7,6 @@
 #include <float.h>
 #include <stddef.h>
 #include <math.h>
-#include <assert.h>
 
 const char *Simple_stats_version = "2.0.0";
 
@@ -18,7 +17,6 @@ const char *simple_stats_version(void)
 
 void simple_stats_init(struct simple_stats *stats)
 {
-	assert(stats);
 	stats->cnt = 0;
 	stats->min = DBL_MAX;
 	stats->max = -DBL_MAX;
@@ -28,7 +26,6 @@ void simple_stats_init(struct simple_stats *stats)
 
 void simple_stats_append_val(struct simple_stats *stats, double val)
 {
-	assert(stats);
 	stats->cnt++;
 	if (stats->min > val) {
 		stats->min = val;
@@ -42,7 +39,6 @@ void simple_stats_append_val(struct simple_stats *stats, double val)
 
 double simple_stats_average(struct simple_stats *stats)
 {
-	assert(stats);
 	return stats->sum / stats->cnt;
 }
 
@@ -50,8 +46,6 @@ double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 {
 	double avg_sum_squared, avg_diff_sum_sq, variance;
 	size_t bassel_cnt;
-
-	assert(stats);
 
 	/*   avoid division by zero */
 	if (stats->cnt == 0) {

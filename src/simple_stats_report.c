@@ -9,15 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 
 char *simple_stats_to_string(struct simple_stats *stats, char *buf,
 			     size_t buflen, int *written)
 {
 	int rv = -1;
 	int bessel_correct = 1;
-
-	assert(stats);
 
 	if (buf) {
 		rv = snprintf(buf, buflen,
