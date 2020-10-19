@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
-/* main.c stats library commandline utility */
-/* Copyright (C) 2014, 2016, 2019 Eric Herman <eric@freesa.org> */
+/* simple_stats_cli_main.c stats library commandline utility */
+/* Copyright (C) 2014, 2016, 2019, 2020 Eric Herman <eric@freesa.org> */
 /* https://github.com/ericherman/simple_stats */
 
 #include <stdlib.h>
@@ -27,7 +27,7 @@ void _display_stats(FILE *out, struct simple_stats **stats, size_t len,
 
 int main(int argc, char *argv[])
 {
-	char filename_buf[FILENAME_MAX];
+	char filename_buf[FILENAME_MAX + 1];
 	struct simple_stats_options options;
 	struct simple_stats **stats;
 	char line_buf[MAX_LINE_LEN];
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	size_t len, i;
 
 	options.filename_buf = filename_buf;
-	options.filename_buf_len = FILENAME_MAX;
+	options.filename_buf_len = FILENAME_MAX + 1;
 
 	simple_stats_parse_args(&options, argc, argv);
 
