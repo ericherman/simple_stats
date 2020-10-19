@@ -28,6 +28,9 @@ CFLAGS += $(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -fPIC -pipe
 LDADD=-lm
 
 OBJECTS=$(sstats_SOURCES:.c=.o)
+ECHECK_SRCS=\
+ ./submodules/libecheck/src/echeck.h \
+ ./submodules/libecheck/src/echeck.c
 
 # extracted from https://github.com/torvalds/linux/blob/master/scripts/Lindent
 LINDENT=indent -npro -kr -i8 -ts8 -sob -l80 -ss -ncs -cp1 -il0
@@ -47,14 +50,24 @@ tidy:
 		-T size_t \
 		`find src tests -name '*.h' -o -name '*.c'`
 
-test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
+
+
+echeck.o: $(ECHECK_SRCS)
+	$(CC) -c $(CFLAGS) -I./submodules/libecheck/src \
+		./submodules/libecheck/src/echeck.c \
+		-o echeck.o
+
+test-sstats-basic: $(sstats_SOURCES) $(OBJECTS) echeck.o
 	$(CC) $(CFLAGS) -I./src -I./tests -I./submodules/libecheck/src \
+		echeck.o \
+		./src/simple_stats.o \
 		-o test-sstats-basic \
 		tests/test-sstats-basic.c \
 		$(LDADD)
-	./test-sstats-basic
+	ls -l ./test-sstats-basic
 
 check: test-sstats-basic
+	./test-sstats-basic
 
 demos: $(bin_PROGRAMS)
 	@echo ""
