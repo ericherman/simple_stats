@@ -14,10 +14,15 @@
 #define Simple_stats_report_end_C_functions
 #endif
 
-#include <stdio.h>
-
 Simple_stats_report_begin_C_functions
 #undef Simple_stats_report_begin_C_functions
+#include <stdio.h>
+/*
+ * declare the existance of "struct simple_stats" but size is not
+ * important for this header.
+ */
+    struct simple_stats;
+
 struct simple_stats **simple_stats_from_file(const char *file_name,
 					     unsigned int channels,
 					     unsigned int skip_cols,

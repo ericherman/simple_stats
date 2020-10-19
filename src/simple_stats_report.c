@@ -4,8 +4,7 @@
 /* https://github.com/ericherman/simple_stats */
 
 #include "simple_stats.h"
-#include <float.h>
-#include <math.h>
+#include "simple_stats_report.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
