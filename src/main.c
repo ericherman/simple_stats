@@ -8,7 +8,7 @@
 #include <string.h>
 #include "simple_stats.h"
 
-#include "ss_options.h"
+#include "simple_stats_options.h"
 
 #define MAX_LINE_LEN 2000
 #define MAX_VALUE_LEN MAX_LINE_LEN
@@ -27,7 +27,7 @@ void _display_stats(FILE *out, struct simple_stats **stats, size_t len,
 
 int main(int argc, char *argv[])
 {
-	ss_options options;
+	simple_stats_options options;
 	struct simple_stats **stats;
 	char line_buf[MAX_LINE_LEN];
 	char val_buf[MAX_VALUE_LEN];

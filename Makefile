@@ -9,7 +9,12 @@ lib_LTLIBRARIES=libsstats.la
 include_HEADERS=src/simple_stats.h
 
 bin_PROGRAMS=sstats
-sstats_SOURCES=src/main.c src/ss_options.c src/simple_stats.c $(include_HEADERS)
+sstats_SOURCES=\
+ $(include_HEADERS) \
+ src/simple_stats_options.h \
+ src/simple_stats_options.c \
+ src/main.c \
+ src/simple_stats.c
 
 CC=gcc
 STD_CFLAGS=--std=c99 -pedantic

@@ -1,13 +1,13 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
-/* ss_options.c stats library options parsing */
+/* simple_stats_options.c stats library options parsing */
 /* Copyright (C) 2014, 2016, 2019 Eric Herman <eric@freesa.org> */
 /* https://github.com/ericherman/simple_stats */
 
-#include "ss_options.h"
+#include "simple_stats_options.h"
 #include <getopt.h>		/* if you don't hate getopt, you should */
 #include <stdlib.h>
 
-void _init_options(ss_options *options)
+void _init_options(simple_stats_options *options)
 {
 	/* initialize to stdin */
 	snprintf(options->file, FILENAME_MAX, "-");
@@ -18,7 +18,7 @@ void _init_options(ss_options *options)
 	options->skip_rows = 0;
 }
 
-void parse_cmdline_args(ss_options *options, int argc, char *argv[])
+void parse_cmdline_args(simple_stats_options *options, int argc, char *argv[])
 {
 	int opt_char;
 	int option_index;
