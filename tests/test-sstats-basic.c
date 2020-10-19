@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 /* test-sstats-basic.c */
-/* Copyright (C) 2018, 2019 Eric Herman <eric@freesa.org> */
+/* Copyright (C) 2018, 2019, 2020 Eric Herman <eric@freesa.org> */
 /* https://github.com/ericherman/simple_stats */
 
 #include <stdio.h>
