@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-or-later
 # Makefile
-# Copyright (C) 2014 - 2019 Eric Herman <eric@freesa.org>
+# Copyright (C) 2014 - 2020 Eric Herman <eric@freesa.org>
 # https://github.com/ericherman/simple_stats
 
 SHELL:=/bin/bash
@@ -13,7 +13,7 @@ sstats_SOURCES=\
  $(include_HEADERS) \
  src/simple_stats_options.h \
  src/simple_stats_options.c \
- src/main.c \
+ src/simple_stats_cli_main.c \
  src/simple_stats.c
 
 CC=gcc
