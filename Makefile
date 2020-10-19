@@ -6,13 +6,14 @@
 SHELL:=/bin/bash
 lib_LTLIBRARIES=libsstats.la
 
-include_HEADERS=src/simple_stats.h
+include_HEADERS=src/simple_stats.h src/simple_stats_report.h
 
 bin_PROGRAMS=sstats
 sstats_SOURCES=\
  $(include_HEADERS) \
  src/simple_stats_options.h \
  src/simple_stats_options.c \
+ src/simple_stats_report.c \
  src/simple_stats_cli_main.c \
  src/simple_stats.c
 

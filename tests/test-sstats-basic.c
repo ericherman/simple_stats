@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "simple_stats.h"
 #include "simple_stats.c"
+#include "simple_stats_report.c"
 #include "echeck.h"
 #include "echeck.c"
 

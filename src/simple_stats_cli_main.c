@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "simple_stats.h"
+#include "simple_stats_report.h"
 
 #include "simple_stats_options.h"
 
