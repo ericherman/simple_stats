@@ -44,7 +44,6 @@ tidy:
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
-		-T ss_options \
 		`find . -name '*.h' -o -name '*.c'`
 
 test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
