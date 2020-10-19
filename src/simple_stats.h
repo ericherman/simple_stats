@@ -23,37 +23,37 @@
  * the struct has no pointers, and thus requires no need for constructors
  * or destructors, only the "simple_stats_init" function
  */
-struct simple_stats_s {
+struct simple_stats {
 	unsigned int cnt;
 	double min;
 	double max;
 	double sum;
 	double sum_of_squares;
 };
-typedef struct simple_stats_s simple_stats;
 
 Simple_stats_begin_C_functions
 #undef Simple_stats_begin_C_functions
 /* functions */
 /* init: caller is only required to pass in a valid struct pointer */
-void simple_stats_init(simple_stats *stats);
+void simple_stats_init(struct simple_stats *stats);
 
-void simple_stats_append_val(simple_stats *stats, double val);
+void simple_stats_append_val(struct simple_stats *stats, double val);
 
-double simple_stats_average(simple_stats *stats);
-double simple_stats_variance(simple_stats *stats, int bessel_correct);
-double simple_stats_std_dev(simple_stats *stats, int bessel_correct);
+double simple_stats_average(struct simple_stats *stats);
+double simple_stats_variance(struct simple_stats *stats, int bessel_correct);
+double simple_stats_std_dev(struct simple_stats *stats, int bessel_correct);
 
-simple_stats **simple_stats_from_file(const char *file_name,
-				      unsigned int channels,
-				      unsigned int skip_cols,
-				      unsigned int skip_rows,
-				      char *line_buf, size_t line_buf_len,
-				      char *val_buf, size_t val_buf_len,
-				      FILE *err, size_t *len);
+struct simple_stats **simple_stats_from_file(const char *file_name,
+					     unsigned int channels,
+					     unsigned int skip_cols,
+					     unsigned int skip_rows,
+					     char *line_buf,
+					     size_t line_buf_len, char *val_buf,
+					     size_t val_buf_len, FILE *err,
+					     size_t *len);
 
-char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
-			     int *written);
+char *simple_stats_to_string(struct simple_stats *stats, char *buf,
+			     size_t buflen, int *written);
 
 const char *simple_stats_version(void);
 

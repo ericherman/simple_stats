@@ -15,7 +15,7 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 {
 	size_t i;
 	int errs;
-	simple_stats stats;
+	struct simple_stats stats;
 	char buf[80];
 	double mean, variance, stddev;
 

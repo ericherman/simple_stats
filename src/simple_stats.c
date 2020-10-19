@@ -11,14 +11,14 @@
 #include <string.h>
 #include <assert.h>
 
-const char *Simple_stats_version = "1.0.1";
+const char *Simple_stats_version = "2.0.0";
 
 const char *simple_stats_version(void)
 {
 	return Simple_stats_version;
 }
 
-void simple_stats_init(simple_stats *stats)
+void simple_stats_init(struct simple_stats *stats)
 {
 	assert(stats);
 	stats->cnt = 0;
@@ -28,7 +28,7 @@ void simple_stats_init(simple_stats *stats)
 	stats->sum_of_squares = 0.0;
 }
 
-void simple_stats_append_val(simple_stats *stats, double val)
+void simple_stats_append_val(struct simple_stats *stats, double val)
 {
 	assert(stats);
 	stats->cnt++;
@@ -42,13 +42,13 @@ void simple_stats_append_val(simple_stats *stats, double val)
 	stats->sum_of_squares += (val * val);
 }
 
-double simple_stats_average(simple_stats *stats)
+double simple_stats_average(struct simple_stats *stats)
 {
 	assert(stats);
 	return stats->sum / stats->cnt;
 }
 
-double simple_stats_variance(simple_stats *stats, int bessel_correct)
+double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 {
 	double avg_sum_squared, avg_diff_sum_sq, variance;
 	size_t bassel_cnt;
@@ -78,13 +78,13 @@ double simple_stats_variance(simple_stats *stats, int bessel_correct)
 	return fabs(variance);
 }
 
-double simple_stats_std_dev(simple_stats *stats, int bessel_correct)
+double simple_stats_std_dev(struct simple_stats *stats, int bessel_correct)
 {
 	return sqrt(simple_stats_variance(stats, bessel_correct));
 }
 
-char *simple_stats_to_string(simple_stats *stats, char *buf, size_t buflen,
-			     int *written)
+char *simple_stats_to_string(struct simple_stats *stats, char *buf,
+			     size_t buflen, int *written)
 {
 	int rv = -1;
 	int bessel_correct = 1;
@@ -156,15 +156,16 @@ static void _lex_col_val(char *line_buf, size_t line_buf_len, size_t *lex_pos,
 	*lex_pos += len;
 }
 
-simple_stats **simple_stats_from_file(const char *file_name,
-				      unsigned int channels,
-				      unsigned int skip_cols,
-				      unsigned int skip_rows,
-				      char *line_buf, size_t line_buf_len,
-				      char *val_buf, size_t val_buf_len,
-				      FILE *err, size_t *len)
+struct simple_stats **simple_stats_from_file(const char *file_name,
+					     unsigned int channels,
+					     unsigned int skip_cols,
+					     unsigned int skip_rows,
+					     char *line_buf,
+					     size_t line_buf_len, char *val_buf,
+					     size_t val_buf_len, FILE *err,
+					     size_t *len)
 {
-	simple_stats **stats;
+	struct simple_stats **stats;
 	FILE *ifp;
 	unsigned short from_file;
 	unsigned int rows_skipped = 0;
@@ -179,7 +180,7 @@ simple_stats **simple_stats_from_file(const char *file_name,
 	}
 	*len = 0;
 
-	size = (sizeof(simple_stats *) * (1 + channels));
+	size = (sizeof(struct simple_stats *) * (1 + channels));
 	stats = calloc(1, size);
 	if (!stats) {
 		fprintf(err, "%s:%d: ", __FILE__, __LINE__);
@@ -189,7 +190,7 @@ simple_stats **simple_stats_from_file(const char *file_name,
 	}
 
 	for (i = 0; i < channels; i++) {
-		size = sizeof(simple_stats);
+		size = sizeof(struct simple_stats);
 		stats[i] = malloc(size);
 		if (!stats[i]) {
 			fprintf(err, "%s:%d: ", __FILE__, __LINE__);

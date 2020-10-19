@@ -40,7 +40,6 @@ tidy:
 		-T FILE \
 		-T size_t \
 		-T ss_options \
-		-T simple_stats \
 		`find . -name '*.h' -o -name '*.c'`
 
 test-sstats-basic: $(sstats_SOURCES) $(OBJECTS)
@@ -74,4 +73,4 @@ spotless:
 	pushd tests && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 
 clean:
-	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*.~ ./test-sstats-basic
+	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*~ tests/*~ ./test-sstats-basic
