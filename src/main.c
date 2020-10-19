@@ -27,16 +27,20 @@ void _display_stats(FILE *out, struct simple_stats **stats, size_t len,
 
 int main(int argc, char *argv[])
 {
-	simple_stats_options options;
+	char filename_buf[FILENAME_MAX];
+	struct simple_stats_options options;
 	struct simple_stats **stats;
 	char line_buf[MAX_LINE_LEN];
 	char val_buf[MAX_VALUE_LEN];
 	size_t len, i;
 
-	parse_cmdline_args(&options, argc, argv);
+	options.filename_buf = filename_buf;
+	options.filename_buf_len = FILENAME_MAX;
+
+	simple_stats_parse_args(&options, argc, argv);
 
 	if (options.help) {
-		print_help(argv[0], simple_stats_version(), stdout, NULL);
+		simple_stats_print_help(argv[0], stdout, NULL);
 		return 0;
 	}
 
@@ -46,7 +50,7 @@ int main(int argc, char *argv[])
 	}
 
 	stats =
-	    simple_stats_from_file(options.file, options.channels,
+	    simple_stats_from_file(options.filename_buf, options.channels,
 				   options.skip_cols, options.skip_rows,
 				   line_buf, MAX_LINE_LEN, val_buf,
 				   MAX_VALUE_LEN, stderr, &len);

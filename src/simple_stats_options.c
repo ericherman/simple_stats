@@ -3,14 +3,15 @@
 /* Copyright (C) 2014, 2016, 2019 Eric Herman <eric@freesa.org> */
 /* https://github.com/ericherman/simple_stats */
 
+#include "simple_stats.h"
 #include "simple_stats_options.h"
 #include <getopt.h>		/* if you don't hate getopt, you should */
 #include <stdlib.h>
 
-void _init_options(simple_stats_options *options)
+static void _init_options(struct simple_stats_options *options)
 {
 	/* initialize to stdin */
-	snprintf(options->file, FILENAME_MAX, "-");
+	snprintf(options->filename_buf, options->filename_buf_len, "-");
 	options->help = 0;
 	options->version = 0;
 	options->channels = 1;
@@ -18,7 +19,8 @@ void _init_options(simple_stats_options *options)
 	options->skip_rows = 0;
 }
 
-void parse_cmdline_args(simple_stats_options *options, int argc, char *argv[])
+void simple_stats_parse_args(struct simple_stats_options *options, int argc,
+			     char *argv[])
 {
 	int opt_char;
 	int option_index;
@@ -61,7 +63,8 @@ void parse_cmdline_args(simple_stats_options *options, int argc, char *argv[])
 		case 'f':	/* --file | -f */
 			{
 				/* basically, optarg is all wrong */
-				snprintf(options->file, FILENAME_MAX, "%s",
+				snprintf(options->filename_buf,
+					 options->filename_buf_len, "%s",
 					 optarg);
 				break;
 			}
@@ -104,10 +107,11 @@ void parse_cmdline_args(simple_stats_options *options, int argc, char *argv[])
 		} \
 	} while (0)
 
-int print_help(const char *argv0, const char *version, FILE *out, int *error)
+int simple_stats_print_help(const char *argv0, FILE *out, int *error)
 {
-	int rv, written;
-	written = 0;
+	int rv = 0;
+	int written = 0;
+	const char *version = simple_stats_version();
 	if (!out) {
 		return written;
 	}
@@ -129,8 +133,8 @@ int print_help(const char *argv0, const char *version, FILE *out, int *error)
 		    "\t\t\t(useful for ignoring header row)\n");
 	_safe_print(rv, written, error, end_print_help, out,
 		    "-h --help\t\tThis message\n");
-	_safe_print(rv, written, error, end_print_help, out,
-		    "-v --version\t\tPrint version\n");
+	_safe_printf(rv, written, error, end_print_help, out,
+		     "-v --version\t\tPrint version (%s)\n", version);
 
 end_print_help:
 	return written;

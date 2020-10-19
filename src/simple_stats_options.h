@@ -9,17 +9,19 @@
 #include <stdio.h>
 #include <stdint.h>
 
-typedef struct simple_stats_options_s {
-	char file[FILENAME_MAX];
+struct simple_stats_options {
+	char *filename_buf;
+	size_t filename_buf_len;
 	uint8_t help;
 	uint8_t version;
 	unsigned int channels;
 	unsigned int skip_cols;
 	unsigned int skip_rows;
-} simple_stats_options;
+};
 
-void parse_cmdline_args(simple_stats_options *options, int argc, char *argv[]);
+void simple_stats_parse_args(struct simple_stats_options *options, int argc,
+			     char *argv[]);
 
-int print_help(const char *argv0, const char *version, FILE *out, int *error);
+int simple_stats_print_help(const char *argv0, FILE *out, int *error);
 
 #endif /* SIMPLE_STATS_OPTIONS_H */
