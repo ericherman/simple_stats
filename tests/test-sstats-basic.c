@@ -46,6 +46,49 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 	return errs;
 }
 
+int compare_simple_stats_sqrt_newton_to_libc(double x)
+{
+	double s = sqrt(x);
+	double n = simple_stats_sqrt_newton(x);
+	double t = 2 * s * DBL_EPSILON;
+	double d = fabs(s - n);
+	int err = d < t ? 0 : 1;
+
+	if (err) {
+		printf("simple_stats_sqrt_newton(%g) = %g\n", x, s);
+		printf("                    sqrt(%g) = %g\n", x, n);
+		printf("                           t = %g\n", t);
+		printf("                           d = %g\n", t);
+		printf("                close enough = %s\n",
+		       err ? "no" : "yes");
+		printf("\n");
+	}
+
+	return err;
+}
+
+int test_simple_stats_sqrt_newton(void)
+{
+	int err = 0;
+	double d1 = 1.0;
+	double d2 = 1.0;
+	double d3 = 3.0;
+	for (int i = 0; i < 20; ++i) {
+		d1 = d1 * 2.0;
+		err += compare_simple_stats_sqrt_newton_to_libc(d1);
+		err += compare_simple_stats_sqrt_newton_to_libc(1.0 / d1);
+
+		d2 = d2 * 10;
+		err += compare_simple_stats_sqrt_newton_to_libc(d2);
+		err += compare_simple_stats_sqrt_newton_to_libc(1.0 / d2);
+
+		d3 = d3 + d2 + d1;
+		err += compare_simple_stats_sqrt_newton_to_libc(d3);
+		err += compare_simple_stats_sqrt_newton_to_libc(1.0 / d3);
+	}
+	return err;
+}
+
 int main(void)
 {
 	int errs = 0;
@@ -71,6 +114,8 @@ int main(void)
 	    check_stats(samples, sample_len, bessel_correct, expect_min,
 			expect_max, expect_mean, expect_variance,
 			expect_stddev);
+
+	errs += test_simple_stats_sqrt_newton();
 
 	return errs ? EXIT_FAILURE : EXIT_SUCCESS;
 }

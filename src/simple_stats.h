@@ -14,12 +14,29 @@
 #define Simple_stats_end_C_functions
 #endif
 
+Simple_stats_begin_C_functions
+#undef Simple_stats_begin_C_functions
 /*
- * Context struct used for all functions
- * typdef'ed as "simple_stats", or use "struct simple_stats_s"
- * simply pass in a valid struct pointer, from stack or malloc/free
- * the struct has no pointers, and thus requires no need for constructors
- * or destructors, only the "simple_stats_init" function
+ * The simple_stats_std_dev() function makes use of the
+ * simple_stats_sqrt function. If SIMPLE_STATS_HOSTED is defined to
+ * non-zero, which is the default via __STDC_HOSTED__, then <math.h>
+ * is included and the simple_stats_sqrt() function is set to
+ * sqrt().  If SIMPLE_STATS_HOSTED is defined to be zero,
+ * simple_stats_sqrt is set to a "DIY" implementation which follows
+ * Newton's method.
+ *
+ * In the embedded case where a full libc is not available, it may
+ * be enough to look at variance. Or, one could elect to set the
+ * function pointer by hand.
+ */
+extern double (*simple_stats_sqrt)(double x);
+
+/*
+ * Context struct used for all functions typdef'ed as
+ * "simple_stats", or use "struct simple_stats_s" simply pass in a
+ * valid struct pointer, from stack or malloc/free the struct has no
+ * pointers, and thus requires no need for constructors or
+ * destructors, only the "simple_stats_init" function
  */
 struct simple_stats {
 	unsigned int cnt;
@@ -29,8 +46,6 @@ struct simple_stats {
 	double sum_of_squares;
 };
 
-Simple_stats_begin_C_functions
-#undef Simple_stats_begin_C_functions
 /* functions */
 /* init: caller is only required to pass in a valid struct pointer */
 void simple_stats_init(struct simple_stats *stats);

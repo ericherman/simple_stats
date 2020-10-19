@@ -4,9 +4,42 @@
 /* https://github.com/ericherman/simple_stats */
 
 #include "simple_stats.h"
+
 #include <float.h>
 #include <stddef.h>
+
+#ifndef SIMPLE_STATS_HOSTED
+#ifdef ARDUINO
+#define SIMPLE_STATS_HOSTED 0
+#endif
+#endif
+
+#ifndef SIMPLE_STATS_HOSTED
+#ifdef __STDC_HOSTED__
+#define SIMPLE_STATS_HOSTED __STDC_HOSTED__
+#endif
+#endif
+
+#if SIMPLE_STATS_HOSTED
 #include <math.h>
+#endif
+
+#ifndef SIMPLE_STATS_NAN
+#ifdef NAN
+#define SIMPLE_STATS_NAN NAN
+#else
+#define SIMPLE_STATS_NAN (0.f / 0.f)
+#endif
+#endif
+
+double simple_stats_sqrt_newton(double x);
+
+#if SIMPLE_STATS_HOSTED
+double (*simple_stats_sqrt)(double x) = sqrt;
+#else
+double simple_stats_sqrt_newton(double x);
+double (*simple_stats_sqrt)(double x) = simple_stats_sqrt_newton;
+#endif
 
 const char *Simple_stats_version = "2.0.0";
 
@@ -49,7 +82,7 @@ double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 
 	/*   avoid division by zero */
 	if (stats->cnt == 0) {
-		return NAN;
+		return SIMPLE_STATS_NAN;
 	}
 	if (stats->cnt == 1) {
 		return 0.0;
@@ -72,5 +105,56 @@ double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 
 double simple_stats_std_dev(struct simple_stats *stats, int bessel_correct)
 {
-	return sqrt(simple_stats_variance(stats, bessel_correct));
+	return simple_stats_sqrt(simple_stats_variance(stats, bessel_correct));
+}
+
+static double simple_stats_fabs(double x)
+{
+	if (x < 0.0) {
+		return -x;
+	}
+	return x;
+}
+
+double simple_stats_sqrt_newton(double x)
+{
+	size_t max_iteratons = 50;
+	size_t i = 0;
+	double divisor = x;
+	double guess = 0.0;
+	double last_guess = 0.0;
+	double distance = 0.0;
+	double our_epsilon = x * DBL_EPSILON;
+
+	if (!(x >= 0.0)) {
+		SIMPLE_STATS_NAN;
+	}
+	if (x == 0.0) {
+		return x;
+	}
+	if (x == INFINITY) {
+		return INFINITY;
+	}
+
+	if (x > 0.0) {
+		our_epsilon = (x / 4.0) * DBL_EPSILON;
+	} else {
+		our_epsilon = (x * 4.0) * DBL_EPSILON;
+	}
+
+	if (x < 0.0) {
+		guess = (x * 2.0);
+	} else {
+		guess = (x / 2.0);
+	}
+
+	for (i = 0; i < max_iteratons; ++i) {
+		last_guess = guess;
+		guess = (guess + divisor / guess) * 0.5;
+		distance = simple_stats_fabs(guess - last_guess);
+		if (distance < our_epsilon) {
+			return guess;
+		}
+	}
+	return guess;
 }

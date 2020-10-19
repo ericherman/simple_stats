@@ -1,3 +1,41 @@
+2020-10-19  Eric Herman <eric@freesa.org>
+
+	Begin the 2.0 development.
+
+	The goal of 2.0 is to be able to more easily use
+	simple_stats in embedded firmwares directly, without needing
+	to modify the sources.
+
+	The "from file" and "to string" functions have been moved
+	out of the main simple_stats.h and simple_stats.c have moved
+	to the simple_stats_report.h and simple_stats_report.c so
+	because these functions rely on libc FILE and printf.
+
+	Rather than link directly to sqrt() as provided by <math.h>,
+	the function pointer (*simple_stats_sqrt) is used. By
+	default, this is set to sqrt. In the non-HOSTED case, this
+	pointer is initialized to a less efficient -- but hopefully
+	reasonable enough -- implementation.
+
+	Functions and structs have had their prefixes normalized.
+
+	The typedef of the structs has been dropped, callers are
+	free to do this themselves if they wish.
+
+	* src/simple_stats.h: move HOSTED prototypes to simple_stats_report.h
+	* src/simple_stats.c: move FILE functions to simple_stats_report.c
+	* src/simple_stats_report.h: to_string and from_file
+	* src/simple_stats_report.c: to_string and from_file
+	* src/simple_stats_options.h: clean-up the options struct
+	* src/simple_stats_options.c: follow new struct/API
+	* src/simple_stats_cli_main.c: use new options API
+	* src/ss_options.h: rename to src/simple_stats_options.h
+	* src/ss_options.c: rename to src/simple_stats_options.c
+	* src/main.c: renamed to src/simple_stats_cli_main.c
+	* tests/test-sstats-basic.c: use simple_stats_report, test sqrt
+	* Makefile: adjust for filenames
+
+
 2017-06-22  Eric Herman <eric@freesa.org>
 
 	Allow specifying Bessel's Correction to variance and std-dev.
