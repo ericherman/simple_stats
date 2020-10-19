@@ -4,7 +4,7 @@
 /* https://github.com/ericherman/simple_stats */
 
 #ifndef SIMPLE_STATS_OPTIONS_H
-#define SIMPLE_STATS_OPTIONS_H
+#define SIMPLE_STATS_OPTIONS_H 1
 
 #include <stdio.h>
 #include <stdint.h>

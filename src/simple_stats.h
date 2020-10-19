@@ -4,7 +4,7 @@
 /* https://github.com/ericherman/simple_stats */
 
 #ifndef SIMPLE_STATS_H
-#define SIMPLE_STATS_H
+#define SIMPLE_STATS_H 1
 
 #ifdef __cplusplus
 #define Simple_stats_begin_C_functions extern "C" {

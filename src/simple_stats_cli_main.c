@@ -14,8 +14,8 @@
 #define MAX_LINE_LEN 2000
 #define MAX_VALUE_LEN MAX_LINE_LEN
 
-void _display_stats(FILE *out, struct simple_stats **stats, size_t len,
-		    char *line_buf, size_t line_buf_len)
+static void _display_stats(FILE *out, struct simple_stats **stats, size_t len,
+			   char *line_buf, size_t line_buf_len)
 {
 	size_t i;
 
