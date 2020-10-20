@@ -57,7 +57,8 @@ echeck.o: $(ECHECK_SRCS)
 		./submodules/libecheck/src/echeck.c \
 		-o echeck.o
 
-test-sstats-basic: $(sstats_SOURCES) $(OBJECTS) echeck.o
+test-sstats-basic: $(sstats_SOURCES) $(OBJECTS) echeck.o \
+		tests/test-sstats-basic.c
 	$(CC) $(CFLAGS) -I./src -I./tests -I./submodules/libecheck/src \
 		echeck.o \
 		./src/simple_stats.o \

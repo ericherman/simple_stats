@@ -38,7 +38,7 @@ void echeck_log_append_simple_stats(struct echeck_log *log,
 
 int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		double expect_min, double expect_max, double expect_mean,
-		double expect_variance, double expect_stddev)
+		double expect_variance, double expect_stddev, int verbose)
 {
 	struct echeck_log *log = echeck_default_log;
 	size_t i;
@@ -46,21 +46,65 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 	struct simple_stats stats;
 	double mean, variance, stddev;
 
+	if (verbose) {
+		log->append_s(log, "simple_stats_init(&stats)");
+		log->append_eol(log);
+	}
 	simple_stats_init(&stats);
 
 	for (i = 0; i < sample_len; ++i) {
+		if (verbose) {
+			log->append_s(log, "simple_stats_append_val(");
+			log->append_f(log, samples[i]);
+			log->append_s(log, ")");
+			log->append_eol(log);
+		}
 		simple_stats_append_val(&stats, samples[i]);
 	}
 	errs = 0;
+	if (verbose) {
+		log->append_s(log, "check_double_scaled_epsilon(stats.min, ");
+		log->append_f(log, expect_min);
+		log->append_s(log, ")");
+		log->append_eol(log);
+	}
 	errs += check_double_scaled_epsilon(stats.min, expect_min);
+
+	if (verbose) {
+		log->append_s(log, "check_double_scaled_epsilon(stats.max, ");
+		log->append_f(log, expect_max);
+		log->append_s(log, ")");
+		log->append_eol(log);
+	}
 	errs += check_double_scaled_epsilon(stats.max, expect_max);
 
+	if (verbose) {
+		log->append_s(log, "check_double_scaled_epsilon(");
+		log->append_s(log, "simple_stats_average(&stats), ");
+		log->append_f(log, expect_mean);
+		log->append_s(log, ")");
+		log->append_eol(log);
+	}
 	mean = simple_stats_average(&stats);
 	errs += check_double_scaled_epsilon(mean, expect_mean);
 
+	if (verbose) {
+		log->append_s(log, "check_double_scaled_epsilon(");
+		log->append_s(log, "simple_stats_variance(&stats, 1), ");
+		log->append_f(log, expect_variance);
+		log->append_s(log, ")");
+		log->append_eol(log);
+	}
 	variance = simple_stats_variance(&stats, bessel_correct);
 	errs += check_double_scaled_epsilon(variance, expect_variance);
 
+	if (verbose) {
+		log->append_s(log, "check_double_scaled_epsilon(");
+		log->append_s(log, "simple_stats_std_dev(&stats, 1), ");
+		log->append_f(log, expect_stddev);
+		log->append_s(log, ")");
+		log->append_eol(log);
+	}
 	stddev = simple_stats_std_dev(&stats, bessel_correct);
 	errs += check_double_scaled_epsilon(stddev, expect_stddev);
 
@@ -72,20 +116,18 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		log->append_eol(log);
 	}
 
+	if (verbose) {
+		log->append_eol(log);
+	}
 	return errs;
 }
 
 /* this test is a "friend" in the C++ sense of the word */
 extern double simple_stats_sqrt_newton(double x);
 
-#define check_simple_stats_sqrt_newton_to_known(x, expected, epsilon) \
-	check_double(simple_stats_sqrt_newton(x), expected, epsilon)
-
-#define square_and_check(root, epsilon) \
-	check_simple_stats_sqrt_newton_to_known((root * root), root, epsilon)
-
-int test_simple_stats_sqrt_newton(void)
+int test_simple_stats_sqrt_newton(int verbose)
 {
+	struct echeck_log *log = echeck_default_log;
 	int errs = 0;
 	double d1 = 1.0;
 	double d2 = 2.0;
@@ -95,35 +137,140 @@ int test_simple_stats_sqrt_newton(void)
 	double epsilon = 0.00001;
 	double epsilon2 = 0.00001;
 
+	if (verbose) {
+		log->append_s(log, "test_simple_stats_sqrt_newton");
+		log->append_eol(log);
+	}
+
 	errs += check_double((sqrt_2 * sqrt_2), 2.0, epsilon);
 	errs += check_double((sqrt_3 * sqrt_3), 3.0, epsilon);
 
-	errs += check_simple_stats_sqrt_newton_to_known(d1, d1, epsilon);
-	errs += check_simple_stats_sqrt_newton_to_known(d2, sqrt_2, epsilon);
-	errs += check_simple_stats_sqrt_newton_to_known(d3, sqrt_3, epsilon);
-	errs += check_simple_stats_sqrt_newton_to_known(100.0, 10.0, epsilon);
-	errs += check_simple_stats_sqrt_newton_to_known(1024.0, 32.0, epsilon);
+	errs += check_double(simple_stats_sqrt_newton(d1), d1, epsilon);
+	errs += check_double(simple_stats_sqrt_newton(d2), sqrt_2, epsilon);
+	errs += check_double(simple_stats_sqrt_newton(d3), sqrt_3, epsilon);
+	errs += check_double(simple_stats_sqrt_newton(100.0), 10.0, epsilon);
+	errs += check_double(simple_stats_sqrt_newton(1024.0), 32.0, epsilon);
 
-	for (int i = 0; i < 10; ++i) {
+	int max_iterations = (sizeof(double) < 8) ? 5 : 10;
+	double square = 0.0;
+	double root = 0.0;
+
+	for (int i = 0; i < max_iterations; ++i) {
+		if (verbose) {
+			log->append_s(log, "simple_stats_sqrt_newton test ");
+			log->append_ul(log, i);
+			log->append_eol(log);
+		}
+
 		d1 = d1 * 2.0;
-		errs += square_and_check(d1, epsilon);
-		errs += square_and_check(1.0 / d1, epsilon2);
+		root = d1;
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon);
+		if (verbose) {
+			log->append_eol(log);
+		}
+
+		root = (1.0 / d1);
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon2);
+		if (verbose) {
+			log->append_eol(log);
+		}
 
 		d2 = d2 * 10;
-		errs += square_and_check(d2, epsilon);
-		errs += square_and_check(1.0 / d2, epsilon2);
+		root = d2;
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon);
+		if (verbose) {
+			log->append_eol(log);
+		}
+
+		root = (1.0 / d2);
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon2);
+		if (verbose) {
+			log->append_eol(log);
+		}
 
 		d3 = d3 + d2 + d1;
-		errs += square_and_check(d3, epsilon);
-		errs += square_and_check(1.0 / d3, epsilon2);
+		root = d3;
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon);
+		if (verbose) {
+			log->append_eol(log);
+		}
+
+		root = (1.0 / d3);
+		square = (root * root);
+		if (verbose) {
+			log->append_s(log, "\t(square: ");
+			log->append_f(log, square);
+			log->append_s(log, "\troot: ");
+			log->append_f(log, root);
+			log->append_s(log, ")");
+		}
+		errs +=
+		    check_double(simple_stats_sqrt_newton(square), root,
+				 epsilon2);
+		if (verbose) {
+			log->append_eol(log);
+		}
 
 		epsilon = (epsilon * 10);
 		epsilon2 = (epsilon / 10);
+		if (verbose) {
+			log->append_eol(log);
+		}
 	}
 	return errs;
 }
 
-int test_sstats_basic(void)
+int test_sstats_basic(int verbose)
 {
 	int errs = 0;
 	double samples[] = { 10.0, 8.0, 10.0, 8.0, 8.0, 4.0 };
@@ -144,26 +291,28 @@ int test_sstats_basic(void)
 
 	errs +=
 	    check_stats(samples, sample_len, bessel_correct, expect_min,
-			expect_max, expect_mean, expect_variance,
-			expect_stddev);
+			expect_max, expect_mean, expect_variance, expect_stddev,
+			verbose);
 
 	bessel_correct = 0;
 	expect_variance = 4;
 	expect_stddev = 2;
 	errs +=
 	    check_stats(samples, sample_len, bessel_correct, expect_min,
-			expect_max, expect_mean, expect_variance,
-			expect_stddev);
+			expect_max, expect_mean, expect_variance, expect_stddev,
+			verbose);
 
-	errs += test_simple_stats_sqrt_newton();
+	errs += test_simple_stats_sqrt_newton(verbose);
 
 	return errs;
 }
 
 #if SIMPLE_STATS_HOSTED
-int main(void)
+#include <stdlib.h>
+int main(int argc, char **argv)
 {
-	int errs = test_sstats_basic();
+	int verbose = argc > 1 ? atoi(argv[1]) : 0;
+	int errs = test_sstats_basic(verbose);
 	return errs ? 1 : 0;
 }
 #endif
