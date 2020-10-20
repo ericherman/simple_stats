@@ -75,6 +75,14 @@ double simple_stats_average(struct simple_stats *stats)
 	return stats->sum / stats->cnt;
 }
 
+static double simple_stats_fabs(double x)
+{
+	if (x < 0.0) {
+		return -x;
+	}
+	return x;
+}
+
 double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 {
 	double avg_sum_squared, avg_diff_sum_sq, variance;
@@ -100,20 +108,12 @@ double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 	avg_sum_squared = (stats->sum * stats->sum) / stats->cnt;
 	avg_diff_sum_sq = stats->sum_of_squares - avg_sum_squared;
 	variance = avg_diff_sum_sq / bassel_cnt;
-	return fabs(variance);
+	return simple_stats_fabs(variance);
 }
 
 double simple_stats_std_dev(struct simple_stats *stats, int bessel_correct)
 {
 	return simple_stats_sqrt(simple_stats_variance(stats, bessel_correct));
-}
-
-static double simple_stats_fabs(double x)
-{
-	if (x < 0.0) {
-		return -x;
-	}
-	return x;
 }
 
 double simple_stats_sqrt_newton(double x)
@@ -126,14 +126,18 @@ double simple_stats_sqrt_newton(double x)
 	double distance = 0.0;
 	double our_epsilon = x * DBL_EPSILON;
 
+	/* if negative or NaN */
 	if (!(x >= 0.0)) {
 		SIMPLE_STATS_NAN;
 	}
-	if (x == 0.0) {
+
+	/* INFINITY */
+	if ((x / 2) == x) {
 		return x;
 	}
-	if (x == INFINITY) {
-		return INFINITY;
+
+	if (x == 0.0) {
+		return x;
 	}
 
 	if (x > 0.0) {
