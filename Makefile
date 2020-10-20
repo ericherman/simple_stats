@@ -48,7 +48,8 @@ tidy:
 	$(LINDENT) \
 		-T FILE \
 		-T size_t \
-		`find src tests -name '*.h' -o -name '*.c'`
+		`find src tests -name '*.h' -o -name '*.c'` \
+		./simple_stats_arduino_tests_arduino/*.ino
 
 
 
