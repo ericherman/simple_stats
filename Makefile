@@ -87,10 +87,13 @@ demo: demos
 #alias
 test: check
 
-spotless:
+clean:
 	rm -rf `cat .gitignore | sed -e 's/#.*//'`
 	pushd src && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 	pushd tests && rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
+	pushd simple_stats_arduino_tests_arduino \
+		&& rm -rf `cat ../.gitignore | sed -e 's/#.*//'` && popd
 
-clean:
-	rm -rf *.o src/*.o $(bin_PROGRAMS) *~ src/*~ tests/*~ ./test-sstats-basic
+spotless:
+	git clean -dffx
+	git submodule foreach --recursive git clean -dffx
