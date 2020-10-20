@@ -19,10 +19,9 @@
 #endif
 
 void echeck_log_append_simple_stats(struct echeck_log *log,
-				    struct simple_stats *stats)
+				    struct simple_stats *stats,
+				    int bessel_correct)
 {
-	int bessel_correct = 1;
-
 	log->append_s(log, "{ cnt: ");
 	log->append_ul(log, stats->cnt);
 	log->append_s(log, ", min: ");
@@ -89,8 +88,13 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 	errs += check_double_scaled_epsilon(mean, expect_mean);
 
 	if (verbose) {
+		log->append_s(log, "bessel_correct == ");
+		log->append_ul(log, bessel_correct);
+		log->append_eol(log);
 		log->append_s(log, "check_double_scaled_epsilon(");
-		log->append_s(log, "simple_stats_variance(&stats, 1), ");
+		log->append_s(log, "simple_stats_variance(&stats, ");
+		log->append_ul(log, bessel_correct);
+		log->append_s(log, "), ");
 		log->append_f(log, expect_variance);
 		log->append_s(log, ")");
 		log->append_eol(log);
@@ -100,7 +104,9 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 
 	if (verbose) {
 		log->append_s(log, "check_double_scaled_epsilon(");
-		log->append_s(log, "simple_stats_std_dev(&stats, 1), ");
+		log->append_s(log, "simple_stats_std_dev(&stats, ");
+		log->append_ul(log, bessel_correct);
+		log->append_s(log, "), ");
 		log->append_f(log, expect_stddev);
 		log->append_s(log, ")");
 		log->append_eol(log);
@@ -112,7 +118,7 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		log->append_ul(log, errs);
 		log->append_s(log, " errors found with: ");
 		log->append_eol(log);
-		echeck_log_append_simple_stats(log, &stats);
+		echeck_log_append_simple_stats(log, &stats, bessel_correct);
 		log->append_eol(log);
 	}
 
