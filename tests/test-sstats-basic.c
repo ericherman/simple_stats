@@ -18,7 +18,7 @@
 #endif
 #endif
 
-void echeck_log_append_simple_stats(struct echeck_log *log,
+void eembed_log_append_simple_stats(struct eembed_log *log,
 				    struct simple_stats *stats,
 				    int bessel_correct)
 {
@@ -39,7 +39,7 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		double expect_min, double expect_max, double expect_mean,
 		double expect_variance, double expect_stddev, int verbose)
 {
-	struct echeck_log *log = echeck_default_log;
+	struct eembed_log *log = eembed_err_log;
 	size_t i;
 	int errs;
 	struct simple_stats stats;
@@ -118,7 +118,7 @@ int check_stats(double *samples, size_t sample_len, int bessel_correct,
 		log->append_ul(log, errs);
 		log->append_s(log, " errors found with: ");
 		log->append_eol(log);
-		echeck_log_append_simple_stats(log, &stats, bessel_correct);
+		eembed_log_append_simple_stats(log, &stats, bessel_correct);
 		log->append_eol(log);
 	}
 
@@ -133,7 +133,7 @@ extern double simple_stats_sqrt_newton(double x);
 
 int test_simple_stats_sqrt_newton(int verbose)
 {
-	struct echeck_log *log = echeck_default_log;
+	struct eembed_log *log = eembed_err_log;
 	int errs = 0;
 	double d1 = 1.0;
 	double d2 = 2.0;

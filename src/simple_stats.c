@@ -8,40 +8,19 @@
 #include <float.h>
 #include <stddef.h>
 
-#ifndef SIMPLE_STATS_HOSTED
-#ifdef ARDUINO
-#define SIMPLE_STATS_HOSTED 0
-#endif
-#endif
-
-#ifndef SIMPLE_STATS_HOSTED
-#ifdef __STDC_HOSTED__
-#define SIMPLE_STATS_HOSTED __STDC_HOSTED__
-#endif
-#endif
-
-#if SIMPLE_STATS_HOSTED
-#include <math.h>
-#endif
-
-#ifndef SIMPLE_STATS_NAN
-#ifdef NAN
-#define SIMPLE_STATS_NAN NAN
-#else
-#define SIMPLE_STATS_NAN (0.f / 0.f)
-#endif
-#endif
+#include "eembed.h"
 
 double simple_stats_sqrt_newton(double x);
 
-#if SIMPLE_STATS_HOSTED
+#if EEMBED_HOSTED
+#include <math.h>
 double (*simple_stats_sqrt)(double x) = sqrt;
 #else
 double simple_stats_sqrt_newton(double x);
 double (*simple_stats_sqrt)(double x) = simple_stats_sqrt_newton;
 #endif
 
-const char *Simple_stats_version = "2.0.0";
+const char *Simple_stats_version = "3.0.0";
 
 const char *simple_stats_version(void)
 {
@@ -90,7 +69,8 @@ double simple_stats_variance(struct simple_stats *stats, int bessel_correct)
 
 	/*   avoid division by zero */
 	if (stats->cnt == 0) {
-		return SIMPLE_STATS_NAN;
+		double simple_stats_nan = (0.f / 0.f);
+		return simple_stats_nan;
 	}
 	if (stats->cnt == 1) {
 		return 0.0;
@@ -128,7 +108,8 @@ double simple_stats_sqrt_newton(double x)
 
 	/* if negative or NaN */
 	if (!(x >= 0.0)) {
-		SIMPLE_STATS_NAN;
+		double simple_stats_nan = (0.f / 0.f);
+		return simple_stats_nan;
 	}
 
 	/* INFINITY */

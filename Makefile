@@ -11,6 +11,8 @@ include_HEADERS=src/simple_stats.h src/simple_stats_report.h
 bin_PROGRAMS=sstats
 sstats_SOURCES=\
  $(include_HEADERS) \
+ submodules/libecheck/src/eembed.h \
+ submodules/libecheck/src/eembed.c \
  src/simple_stats_options.h \
  src/simple_stats_options.c \
  src/simple_stats_report.c \
@@ -22,13 +24,20 @@ STD_CFLAGS=--std=c99 -pedantic
 NOISY_CFLAGS=-Werror -Wall -Wextra
 OPTIMIZER_CFLAGS=-ggdb -O2 -DNDEBUG -fomit-frame-pointer
 
-CFLAGS += $(STD_CFLAGS) $(OPTIMIZER_CFLAGS) $(NOISY_CFLAGS) -fPIC -pipe
+CFLAGS += $(STD_CFLAGS) \
+	  $(OPTIMIZER_CFLAGS) \
+	  $(NOISY_CFLAGS) \
+	  -I./submodules/libecheck/src \
+	  -fPIC \
+	  -pipe
 
 # "-lm" needed by simple_stats.c see also: man 3 sqrt
 LDADD=-lm
 
 OBJECTS=$(sstats_SOURCES:.c=.o)
 ECHECK_SRCS=\
+ ./submodules/libecheck/src/eembed.h \
+ ./submodules/libecheck/src/eembed.c \
  ./submodules/libecheck/src/echeck.h \
  ./submodules/libecheck/src/echeck.c
 
@@ -58,9 +67,16 @@ echeck.o: $(ECHECK_SRCS)
 		./submodules/libecheck/src/echeck.c \
 		-o echeck.o
 
-test-sstats-basic: $(sstats_SOURCES) $(OBJECTS) echeck.o \
+eembed.o: $(ECHECK_SRCS)
+	$(CC) -c $(CFLAGS) -I./submodules/libecheck/src \
+		./submodules/libecheck/src/eembed.c \
+		-o eembed.o
+
+
+test-sstats-basic: $(sstats_SOURCES) $(OBJECTS) echeck.o eembed.o \
 		tests/test-sstats-basic.c
 	$(CC) $(CFLAGS) -I./src -I./tests -I./submodules/libecheck/src \
+		eembed.o \
 		echeck.o \
 		./src/simple_stats.o \
 		-o test-sstats-basic \

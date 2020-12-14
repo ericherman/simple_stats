@@ -5,7 +5,7 @@
 #include <Arduino.h>
 #include <HardwareSerial.h>
 
-#include "echeck-arduino.h"
+#include "eembed-arduino.h"
 
 int test_sstats_basic(int verbose);
 
@@ -16,7 +16,7 @@ void setup(void)
 {
 	Serial.begin(9600);
 
-	echeck_arduino_serial_log_init();
+	eembed_arduino_serial_log_init();
 
 	delay(50);
 
